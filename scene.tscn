@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://dousinkic130u"]
+
+[ext_resource type="Script" uid="uid://1hpx4kf27wn1" path="res://visuals/CylinderGraphics.cs" id="1_ulcgi"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_nxogm"]
+top_radius = 1.0
+bottom_radius = 1.0
+height = 1.0
+
+[node name="Scene" type="Node3D"]
+
+[node name="Cylinder" type="Node3D" parent="." node_paths=PackedStringArray("piston")]
+script = ExtResource("1_ulcgi")
+piston = NodePath("pistone")
+bore = 10.0
+
+[node name="pistone" type="MeshInstance3D" parent="Cylinder"]
+mesh = SubResource("CylinderMesh_nxogm")
+skeleton = NodePath("../..")
