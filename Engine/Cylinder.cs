@@ -1,11 +1,12 @@
 using Godot;
 [Tool]
-public partial class CylinderGraphics : Node3D
+public partial class Cylinder : Node3D
 {
-
     [Export] private MeshInstance3D gasInsideCylinder;
     [Export] private MeshInstance3D piston;
-
+    [Export] private Crankshaft crankshaft;
+    [Export(PropertyHint.Range, "1,100,")] private uint cylinderIndex = 1;
+    [Export] private float angleOffset;
     [ExportGroup("")]
     [Export(PropertyHint.Range, "0,1,")] private float pistonPosition;
     [ExportGroup("engine size (cm^3)")]
@@ -16,18 +17,21 @@ public partial class CylinderGraphics : Node3D
 
     [ExportGroup("piston settings")]
     [Export] private float pistonHeight;
+
     public override void _Process(double delta)
     {
         if (Engine.IsEditorHint())
         {
-            CalculateEngineDisplacement();
+            stroke = crankshaft.GetStroke();
+            Position = crankshaft.GetRelativeCylinderPlacement(cylinderIndex);
+            CalculateDisplacement();
         }
         UpdateMeshes();
 
         base._Process(delta);
     }
 
-    private void CalculateEngineDisplacement()
+    private void CalculateDisplacement()
     {
         var radius = bore / 2;
         engineDisplacement = Mathf.Pi * radius * radius * (stroke + additionalUpwardHeight);
@@ -41,7 +45,7 @@ public partial class CylinderGraphics : Node3D
             piston.Scale = new(bore, pistonHeight, bore);
 
         }
-
+        pistonPosition = (crankshaft.GetPistonPositionAtAngle(crankshaft.crankAngle + angleOffset) - Position.Y) / stroke;
         piston.Position = new(0, stroke * pistonPosition - pistonHeight / 2f, 0);
 
         var height = stroke + additionalUpwardHeight - stroke * pistonPosition;
