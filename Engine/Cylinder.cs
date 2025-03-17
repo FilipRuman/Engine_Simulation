@@ -9,6 +9,8 @@ public partial class Cylinder : Node3D
     [Export] public float angleOffset;
     [ExportGroup("Current values")]
     [Export(PropertyHint.Range, "0,1,")] private float pistonPosition;
+    [Export] private float currentTorque;
+
     [ExportGroup("engine size (cm^3)")]
     [Export] private float bore;
     [Export] private float stroke;
@@ -55,10 +57,11 @@ public partial class Cylinder : Node3D
         gasInsideCylinder.Position = new(0, stroke + additionalUpwardHeight - height / 2f, 0);
         gasInsideCylinder.Scale = new(bore, height, bore);
     }
-    public float CalcualteTorque(float linearForce)
+    public float CalculateTorque(float linearForce)
     {
-        //TODO
-        return 0;
+        //https://en.wikipedia.org/wiki/Torque#Definition_and_relation_to_other_physical_quantities
+
+        return crankshaft.crankPinLength * linearForce * Mathf.Sin(Mathf.DegToRad(CurrentAngleDegrees));
     }
 
 
