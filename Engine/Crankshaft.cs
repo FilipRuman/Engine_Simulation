@@ -26,7 +26,7 @@ public partial class Crankshaft : Node3D
 
         mesh.Scale = new(1, crankshaftLength, 1);
         mesh.RotationDegrees = new(90, shaftAngle, 0);
-        crankPinSpawnPoint.RotationDegrees = new(90, shaftAngle, 0);
+        crankPinSpawnPoint.RotationDegrees = new(0, 0, shaftAngle);
         mesh.Position = new Vector3(0, 0, crankshaftLength / 2f);
         base._Process(delta);
     }
@@ -38,7 +38,7 @@ public partial class Crankshaft : Node3D
 
     public void SpawnCrankPins()
     {
-        crankPinSpawnPoint.RotationDegrees = new(90, 0, 0);
+        crankPinSpawnPoint.RotationDegrees = new(0, 0, 0);
         foreach (Node3D node in crankPinSpawnPoint.GetChildren())
         {
             node.QueueFree();
@@ -52,17 +52,17 @@ public partial class Crankshaft : Node3D
             crankPinSpawnPoint.AddChild(node);
             var node3d = (Node3D)node;
 
-            node3d.RotationDegrees = new(-cylinder.angleOffset, 90, 90);
+            node3d.RotationDegrees = new(0, 0, cylinder.angleOffset);
             node3d.Scale = new(node3d.Scale.X, crankPinLength, node3d.Scale.Z);
-            node3d.GlobalPosition = Vector3.Back * GetRelativeCylinderPlacement(cylinder.cylinderIndex).Z + node3d.Quaternion * Vector3.Right * crankPinLength / 2f;
+            node3d.Position = Vector3.Back * GetRelativeCylinderPlacement(cylinder.cylinderIndex).Z;
         }
 
     }
     //https://en.wikipedia.org/wiki/Piston_motion_equations
-    public float GetPistonPositionAtAngle(float angle)
+    public float GetPistonPositionAtAngle(float angleInDegrees)
     {
-        angle = Mathf.DegToRad(angle);
-        return crankPinLength * Mathf.Cos(angle) + Mathf.Sqrt(rodLength * rodLength - crankPinLength * crankPinLength * Mathf.Sin(angle) * Mathf.Sin(angle));
+        var angleInRads = Mathf.DegToRad(angleInDegrees);
+        return crankPinLength * Mathf.Cos(angleInRads) + Mathf.Sqrt(rodLength * rodLength - crankPinLength * crankPinLength * Mathf.Sin(angleInRads) * Mathf.Sin(angleInRads));
     }
     public float GetStroke()
     {

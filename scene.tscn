@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c22ii7ib7cnfw" path="res://Engine/Cylinder.cs" id="1_nxogm"]
 [ext_resource type="Script" uid="uid://b7ba3uaxjle7" path="res://Engine/Crankshaft.cs" id="2_3253y"]
-[ext_resource type="PackedScene" uid="uid://cf1aefhwb1dnh" path="res://Engine/cranck_pin.tscn" id="2_u3cyc"]
+[ext_resource type="PackedScene" uid="uid://yr1lm7flecqr" path="res://Engine/crank_pin_new.tscn" id="2_u3cyc"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_u3cyc"]
 top_radius = 1.0
@@ -31,7 +31,6 @@ rodLength = 8.715
 crankPinLength = 5.0
 
 [node name="crankPinSpawnPoint" type="Node3D" parent="crankShaft"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 rotation_order = 0
 
 [node name="crankShaftMesh" type="MeshInstance3D" parent="crankShaft"]

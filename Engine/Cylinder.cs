@@ -7,7 +7,7 @@ public partial class Cylinder : Node3D
     [Export] private Crankshaft crankshaft;
     [Export(PropertyHint.Range, "0,100,")] public uint cylinderIndex = 0;
     [Export] public float angleOffset;
-    [ExportGroup("")]
+    [ExportGroup("Current values")]
     [Export(PropertyHint.Range, "0,1,")] private float pistonPosition;
     [ExportGroup("engine size (cm^3)")]
     [Export] private float bore;
@@ -15,9 +15,11 @@ public partial class Cylinder : Node3D
     [Export] private float additionalUpwardHeight;
     [Export] private float engineDisplacement;
 
+
     [ExportGroup("piston settings")]
     [Export] private float pistonHeight;
 
+    public float CurrentAngleDegrees => angleOffset + crankshaft.shaftAngle;
     public override void _Process(double delta)
     {
         if (Engine.IsEditorHint())
@@ -26,6 +28,7 @@ public partial class Cylinder : Node3D
             Position = crankshaft.GetRelativeCylinderPlacement(cylinderIndex);
             CalculateDisplacement();
         }
+        currentTorque = CalculateTorque(1);
         UpdateMeshes();
 
         base._Process(delta);
@@ -45,7 +48,7 @@ public partial class Cylinder : Node3D
             piston.Scale = new(bore, pistonHeight, bore);
 
         }
-        pistonPosition = (crankshaft.GetPistonPositionAtAngle(crankshaft.shaftAngle + angleOffset) - Position.Y) / stroke;
+        pistonPosition = (crankshaft.GetPistonPositionAtAngle(CurrentAngleDegrees) - Position.Y) / stroke;
         piston.Position = new(0, stroke * pistonPosition - pistonHeight / 2f, 0);
 
         var height = stroke + additionalUpwardHeight - stroke * pistonPosition;
