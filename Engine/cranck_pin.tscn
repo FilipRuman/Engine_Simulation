@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://bet4eu4q085pa"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_nxogm"]
+radius = 0.25
+height = 1.0
+
+[node name="CranckPin" type="MeshInstance3D"]
+transform = Transform3D(8.69362e-16, 8.74228e-08, 1, 0.455, -8.74228e-08, -3.7025e-29, 1.98887e-08, 2, -4.37114e-08, 0, 0, 0)
+rotation_order = 0
+mesh = SubResource("CapsuleMesh_nxogm")

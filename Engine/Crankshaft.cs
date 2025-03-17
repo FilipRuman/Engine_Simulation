@@ -6,11 +6,19 @@ public partial class Crankshaft : Node3D
 {
     [Export] private MeshInstance3D mesh;
 
-    [Export] private bool reSpawnCrankPins;
     [Export] private Node3D crankPinSpawnPoint;
     [Export] private PackedScene crankPinPrefab;
     /// from top dead center
-    [Export] public float shaftAngle = 0;
+
+    [ExportGroup("Angle relatedStuff")]
+    //TODO: Calculate this
+    [Export] public float momentOfInertia;
+
+    [Export] public float shaftAngleDeg = 0;
+    [Export] public float angularVelocityDeg = 1;
+
+
+    [ExportGroup("cylinders poistions settings")]
     [Export] public float crankshaftLength = 10f;
     [Export] public float cylindersPadding = 5f;
     [Export] public Cylinder[] cylinders;
@@ -19,17 +27,46 @@ public partial class Crankshaft : Node3D
     [Export] public float rodLength = 0;
     [Export] public float crankPinLength = 0;
 
+
+
     public override void _Process(double delta)
     {
-        //TODO: make that only in editor
-        SpawnCrankPins();
 
-        mesh.Scale = new(1, crankshaftLength, 1);
-        mesh.RotationDegrees = new(90, shaftAngle, 0);
-        crankPinSpawnPoint.RotationDegrees = new(0, 0, shaftAngle);
-        mesh.Position = new Vector3(0, 0, crankshaftLength / 2f);
+        HandlePhysics((float)delta);
+
+
+
+        //TODO: make that only in editor
+        if (Engine.IsEditorHint())
+            SpawnCrankPins();
+
+        UodateCrankShaftVisuals();
         base._Process(delta);
     }
+    private void HandlePhysics(float delta)
+    {
+        float torque = 0;
+        foreach (Cylinder cylinder in cylinders)
+        {
+            torque += cylinder.GetCurrentTorque();
+        }
+
+        var angularAcceleration = torque / momentOfInertia;
+        angularVelocityDeg += angularAcceleration * delta;
+
+        shaftAngleDeg += angularVelocityDeg * delta;
+    }
+
+    private void UodateCrankShaftVisuals()
+    {
+
+        mesh.Scale = new(1, crankshaftLength, 1);
+        mesh.RotationDegrees = new(90, shaftAngleDeg, 0);
+        crankPinSpawnPoint.RotationDegrees = new(0, 0, shaftAngleDeg);
+        mesh.Position = new Vector3(0, 0, crankshaftLength / 2f);
+    }
+
+
     public override void _Ready()
     {
         SpawnCrankPins();
@@ -43,6 +80,7 @@ public partial class Crankshaft : Node3D
         {
             node.QueueFree();
         }
+
 
 
         foreach (Cylinder cylinder in cylinders)

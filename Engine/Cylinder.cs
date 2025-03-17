@@ -29,7 +29,7 @@ public partial class Cylinder : Node3D
     [ExportGroup("piston settings")]
     [Export] private float pistonHeight;
 
-    public float CurrentAngleDegrees => angleOffset + crankshaft.shaftAngle;
+    public float CurrentAngleDegrees => angleOffset + crankshaft.shaftAngleDeg;
     public StrokeType GetCurrentStrokeType()
     {
         return (StrokeType)(Mathf.FloorToInt((CurrentAngleDegrees + 180) / 180f) % 4);
@@ -38,16 +38,27 @@ public partial class Cylinder : Node3D
     {
         if (Engine.IsEditorHint())
         {
+            currentTorque = GetCurrentTorque();
             stroke = crankshaft.GetStroke();
             Position = crankshaft.GetRelativeCylinderPlacement(cylinderIndex);
             CalculateDisplacement();
+            currentTorque = CalculateTorque(1);
+            currentStorkeTyoe = GetCurrentStrokeType();
         }
-        currentTorque = CalculateTorque(1);
-        currentStorkeTyoe = GetCurrentStrokeType();
 
         UpdateMeshes();
 
         base._Process(delta);
+    }
+
+    public float GetCurrentForce()
+    {
+        //TODO
+        return GetCurrentStrokeType() == StrokeType.Combustion ? 1 : 0;
+    }
+    public float GetCurrentTorque()
+    {
+        return CalculateTorque(GetCurrentForce());
     }
 
     private void CalculateDisplacement()
