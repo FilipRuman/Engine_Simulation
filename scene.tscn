@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://dousinkic130u"]
+[gd_scene load_steps=12 format=3 uid="uid://dousinkic130u"]
 
 [ext_resource type="Script" uid="uid://c22ii7ib7cnfw" path="res://Engine/Cylinder.cs" id="1_nxogm"]
 [ext_resource type="Script" uid="uid://b7ba3uaxjle7" path="res://Engine/Crankshaft.cs" id="2_3253y"]
 [ext_resource type="PackedScene" uid="uid://yr1lm7flecqr" path="res://Engine/crank_pin_new.tscn" id="2_u3cyc"]
+[ext_resource type="Shader" uid="uid://d2po6ur3ne678" path="res://GassVisualization.gdshader" id="4_u3cyc"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_u3cyc"]
 top_radius = 1.0
@@ -14,8 +15,45 @@ top_radius = 1.0
 bottom_radius = 1.0
 height = 1.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ulcgi"]
-albedo_color = Color(0.309804, 1, 1, 1)
+[sub_resource type="Shader" id="Shader_u3cyc"]
+code = "shader_type spatial;
+uniform int strokeIndex;
+
+void fragment() {
+vec3 albedo;
+if(strokeIndex == 0){ // exhaust
+	albedo = vec3(0,0,0);
+}else if(strokeIndex == 1){
+	albedo = vec3(.46,.67,1); //intake -> light blue
+}else if(strokeIndex == 2){
+	albedo = vec3(1,.98,.48); //compression -> light yellow
+}else{
+	albedo = vec3(1,0,0); // power -> red
+}
+
+ALBEDO = albedo;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m7jmp"]
+render_priority = 0
+shader = SubResource("Shader_u3cyc")
+shader_parameter/strokeIndex = 1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y2354"]
+render_priority = 0
+shader = ExtResource("4_u3cyc")
+shader_parameter/strokeIndex = 2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ni31j"]
+render_priority = 0
+shader = ExtResource("4_u3cyc")
+shader_parameter/strokeIndex = 0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xlvrw"]
+render_priority = 0
+shader = ExtResource("4_u3cyc")
+shader_parameter/strokeIndex = 3
 
 [node name="Scene" type="Node3D"]
 
@@ -45,6 +83,7 @@ gasInsideCylinder = NodePath("gas")
 piston = NodePath("pistone")
 crankshaft = NodePath("..")
 pistonPosition = 1.0
+currentStorkeTyoe = 1
 bore = 2.695
 stroke = 6.57699
 engineDisplacement = 37.5175
@@ -59,7 +98,7 @@ skeleton = NodePath("../../..")
 transform = Transform3D(2.695, 0, 0, 0, 0, 0, 0, 0, 2.695, 0, 6.57699, 0)
 mesh = SubResource("CylinderMesh_nxogm")
 skeleton = NodePath("../../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_ulcgi")
+surface_material_override/0 = SubResource("ShaderMaterial_m7jmp")
 
 [node name="Cylinder2" type="Node3D" parent="crankShaft" node_paths=PackedStringArray("gasInsideCylinder", "piston", "crankshaft")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.13801, 20.6567)
@@ -70,6 +109,7 @@ crankshaft = NodePath("..")
 cylinderIndex = 1
 angleOffset = 180.0
 pistonPosition = -0.520453
+currentStorkeTyoe = 2
 bore = 2.695
 stroke = 6.57699
 engineDisplacement = 37.5175
@@ -84,7 +124,7 @@ skeleton = NodePath("../../..")
 transform = Transform3D(2.695, 0, 0, 0, 10, 0, 0, 0, 2.695, 0, 1.57699, 0)
 mesh = SubResource("CylinderMesh_nxogm")
 skeleton = NodePath("../../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_ulcgi")
+surface_material_override/0 = SubResource("ShaderMaterial_y2354")
 
 [node name="Cylinder3" type="Node3D" parent="crankShaft" node_paths=PackedStringArray("gasInsideCylinder", "piston", "crankshaft")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.13801, 31.3133)
@@ -109,7 +149,7 @@ skeleton = NodePath("../../..")
 transform = Transform3D(2.695, 0, 0, 0, 10, 0, 0, 0, 2.695, 0, 1.57699, 0)
 mesh = SubResource("CylinderMesh_nxogm")
 skeleton = NodePath("../../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_ulcgi")
+surface_material_override/0 = SubResource("ShaderMaterial_ni31j")
 
 [node name="Cylinder4" type="Node3D" parent="crankShaft" node_paths=PackedStringArray("gasInsideCylinder", "piston", "crankshaft")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.13801, 41.97)
@@ -120,6 +160,7 @@ crankshaft = NodePath("..")
 cylinderIndex = 3
 angleOffset = 360.0
 pistonPosition = 1.0
+currentStorkeTyoe = 3
 bore = 2.695
 stroke = 6.57699
 engineDisplacement = 37.5175
@@ -134,4 +175,4 @@ skeleton = NodePath("../../..")
 transform = Transform3D(2.695, 0, 0, 0, 0, 0, 0, 0, 2.695, 0, 6.57699, 0)
 mesh = SubResource("CylinderMesh_nxogm")
 skeleton = NodePath("../../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_ulcgi")
+surface_material_override/0 = SubResource("ShaderMaterial_xlvrw")

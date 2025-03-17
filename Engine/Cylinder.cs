@@ -2,6 +2,14 @@ using Godot;
 [Tool, GlobalClass]
 public partial class Cylinder : Node3D
 {
+    public enum StrokeType
+    {
+        Exhaust,
+        Intake,
+        Compression,
+        Combustion
+    }
+
     [Export] private MeshInstance3D gasInsideCylinder;
     [Export] private MeshInstance3D piston;
     [Export] private Crankshaft crankshaft;
@@ -10,7 +18,7 @@ public partial class Cylinder : Node3D
     [ExportGroup("Current values")]
     [Export(PropertyHint.Range, "0,1,")] private float pistonPosition;
     [Export] private float currentTorque;
-
+    [Export] private StrokeType currentStorkeTyoe;
     [ExportGroup("engine size (cm^3)")]
     [Export] private float bore;
     [Export] private float stroke;
@@ -22,6 +30,10 @@ public partial class Cylinder : Node3D
     [Export] private float pistonHeight;
 
     public float CurrentAngleDegrees => angleOffset + crankshaft.shaftAngle;
+    public StrokeType GetCurrentStrokeType()
+    {
+        return (StrokeType)(Mathf.FloorToInt((CurrentAngleDegrees + 180) / 180f) % 4);
+    }
     public override void _Process(double delta)
     {
         if (Engine.IsEditorHint())
@@ -31,6 +43,8 @@ public partial class Cylinder : Node3D
             CalculateDisplacement();
         }
         currentTorque = CalculateTorque(1);
+        currentStorkeTyoe = GetCurrentStrokeType();
+
         UpdateMeshes();
 
         base._Process(delta);
@@ -50,12 +64,16 @@ public partial class Cylinder : Node3D
             piston.Scale = new(bore, pistonHeight, bore);
 
         }
+
         pistonPosition = (crankshaft.GetPistonPositionAtAngle(CurrentAngleDegrees) - Position.Y) / stroke;
         piston.Position = new(0, stroke * pistonPosition - pistonHeight / 2f, 0);
 
         var height = stroke + additionalUpwardHeight - stroke * pistonPosition;
         gasInsideCylinder.Position = new(0, stroke + additionalUpwardHeight - height / 2f, 0);
         gasInsideCylinder.Scale = new(bore, height, bore);
+
+        var material = (ShaderMaterial)gasInsideCylinder.GetSurfaceOverrideMaterial(0);
+        material.SetShaderParameter("strokeIndex", (int)GetCurrentStrokeType());
     }
     public float CalculateTorque(float linearForce)
     {
