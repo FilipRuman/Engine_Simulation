@@ -18,11 +18,15 @@ public partial class Cylinder : Node3D
     [ExportGroup("Current values")]
     [Export(PropertyHint.Range, "0,1,")] private float pistonPosition;
     [Export] private float currentTorque;
-    [Export] private StrokeType currentStorkeTyoe;
+    [Export] private StrokeType currentStorkeType;
     [ExportGroup("engine size (cm^3)")]
+    /// m
     [Export] private float bore;
+    ///m
     [Export] private float stroke;
+    /// m
     [Export] private float additionalUpwardHeight;
+    /// m^3
     [Export] private float engineDisplacement;
 
 
@@ -30,10 +34,8 @@ public partial class Cylinder : Node3D
     [Export] private float pistonHeight;
 
     public float CurrentAngleDegrees => angleOffset + crankshaft.shaftAngleDeg;
-    public StrokeType GetCurrentStrokeType()
-    {
-        return (StrokeType)(Mathf.FloorToInt((CurrentAngleDegrees + 180) / 180f) % 4);
-    }
+    public StrokeType CurrentStrokeType => (StrokeType)(Mathf.FloorToInt((CurrentAngleDegrees + 180) / 180f) % 4);
+    public float CurrentGasVolume => bore * (stroke * (1 - pistonPosition) + additionalUpwardHeight);
     public override void _Process(double delta)
     {
         if (Engine.IsEditorHint())
@@ -43,7 +45,7 @@ public partial class Cylinder : Node3D
             Position = crankshaft.GetRelativeCylinderPlacement(cylinderIndex);
             CalculateDisplacement();
             currentTorque = CalculateTorque(1);
-            currentStorkeTyoe = GetCurrentStrokeType();
+            currentStorkeType = CurrentStrokeType;
         }
 
         UpdateMeshes();
@@ -51,10 +53,38 @@ public partial class Cylinder : Node3D
         base._Process(delta);
     }
 
-    public float GetCurrentForce()
+    //TEMP:
+    [ExportGroup("Combustion settings")]
+    [Export] float combustionAirDensityModifier = 1;
+    [Export] float combustionTemperature = 1;
+    public void UpdateCurrentConditionsInsideCylinder()
     {
-        //TODO
-        return GetCurrentStrokeType() == StrokeType.Combustion ? 1 : 0;
+
+        // TODO:
+        gasMas = ambientAirDensity * (CurrentStrokeType == StrokeType.Combustion ? combustionAirDensityModifier : 1);
+        airTemperature = CurrentStrokeType == StrokeType.Combustion ? combustionTemperature : ambientAirTemperature;
+
+    }
+
+
+
+    const float GasConstant = 8.314f;
+    const float ambientAirDensity = 1.225f; // kg/m3
+    const float ambientAirTemperature = 288.15f; // Kelvins
+
+    float gasMas = 1000; // kg/m3
+    float airTemperature = 10000; //Kelvins
+    private float GetCurrentForce()
+    {
+        float mas = gasMas;
+        float temperature = airTemperature;
+        float volume = CurrentGasVolume;
+        float pressure = mas * GasConstant * temperature / volume;
+        float radius = bore / 2f;
+        float area = Mathf.Pi * radius * radius;
+        float force = area * pressure;
+
+        return force;
     }
     public float GetCurrentTorque()
     {
@@ -84,12 +114,12 @@ public partial class Cylinder : Node3D
         gasInsideCylinder.Scale = new(bore, height, bore);
 
         var material = (ShaderMaterial)gasInsideCylinder.GetSurfaceOverrideMaterial(0);
-        material.SetShaderParameter("strokeIndex", (int)GetCurrentStrokeType());
+        material.SetShaderParameter("strokeIndex", (int)CurrentStrokeType);
     }
-    public float CalculateTorque(float linearForce)
-    {
-        //https://en.wikipedia.org/wiki/Torque#Definition_and_relation_to_other_physical_quantities
 
+    float CalculateTorque(float linearForce)
+    {
+        //TODO: Use one from this paper's first part https://crimsonpublishers.com/eme/pdf/EME.000582.pdf         
         return crankshaft.crankPinLength * linearForce * Mathf.Sin(Mathf.DegToRad(CurrentAngleDegrees));
     }
 

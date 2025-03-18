@@ -32,13 +32,14 @@ public partial class Crankshaft : Node3D
     public override void _Process(double delta)
     {
 
-        HandlePhysics((float)delta);
-
 
 
         //TODO: make that only in editor
         if (Engine.IsEditorHint())
             SpawnCrankPins();
+        else
+            HandlePhysics((float)delta);
+
 
         UodateCrankShaftVisuals();
         base._Process(delta);
@@ -48,6 +49,7 @@ public partial class Crankshaft : Node3D
         float torque = 0;
         foreach (Cylinder cylinder in cylinders)
         {
+            cylinder.UpdateCurrentConditionsInsideCylinder();
             torque += cylinder.GetCurrentTorque();
         }
 
