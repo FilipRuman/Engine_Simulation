@@ -10,9 +10,10 @@ public partial class CylinderVisuals : Node3D
         if (Engine.IsEditorHint())
         {
             piston.Scale = new(main.bore, main.pistonHeight, main.bore);
-
         }
 
+
+        piston.Position = new(0, main.stroke * main.pistonPosition - main.pistonHeight / 2f, 0);
 
         var height = main.stroke + main.additionalUpwardHeight - main.stroke * main.pistonPosition;
         gasInsideCylinder.Position = new(0, main.stroke + main.additionalUpwardHeight - height / 2f, 0);
