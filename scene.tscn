@@ -1,8 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://dousinkic130u"]
+[gd_scene load_steps=13 format=3 uid="uid://dousinkic130u"]
 
-[ext_resource type="Script" uid="uid://c22ii7ib7cnfw" path="res://Engine/Cylinder.cs" id="1_nxogm"]
+[ext_resource type="Script" uid="uid://br8ltumy454oj" path="res://Engine/Cylinder/Cylinder.cs" id="1_nxogm"]
 [ext_resource type="Script" uid="uid://b7ba3uaxjle7" path="res://Engine/Crankshaft.cs" id="2_3253y"]
 [ext_resource type="PackedScene" uid="uid://yr1lm7flecqr" path="res://Engine/crank_pin_new.tscn" id="2_u3cyc"]
+[ext_resource type="Script" uid="uid://uqcqw4fkolyo" path="res://Engine/Cylinder/CylinderVisuals.cs" id="4_m7jmp"]
 [ext_resource type="Shader" uid="uid://d2po6ur3ne678" path="res://GassVisualization.gdshader" id="4_u3cyc"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_u3cyc"]
@@ -63,7 +64,7 @@ mesh = NodePath("crankShaftMesh")
 crankPinSpawnPoint = NodePath("crankPinSpawnPoint")
 crankPinPrefab = ExtResource("2_u3cyc")
 momentOfInertia = 2000.0
-angularVelocityDeg = 100.0
+angularVelocityDeg = 0.0
 crankshaftLength = 51.97
 cylindersPadding = 10.0
 cylinders = [NodePath("Cylinder"), NodePath("Cylinder2"), NodePath("Cylinder3"), NodePath("Cylinder4")]
@@ -78,11 +79,10 @@ transform = Transform3D(1, 0, 0, 0, -2.27168e-06, -1, 0, 51.97, -4.37114e-08, 0,
 rotation_order = 0
 mesh = SubResource("CylinderMesh_u3cyc")
 
-[node name="Cylinder" type="Node3D" parent="crankShaft" node_paths=PackedStringArray("gasInsideCylinder", "piston", "crankshaft")]
+[node name="Cylinder" type="Node3D" parent="crankShaft" node_paths=PackedStringArray("visuals", "crankshaft")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23.9435, 10)
 script = ExtResource("1_nxogm")
-gasInsideCylinder = NodePath("gas")
-piston = NodePath("pistone")
+visuals = NodePath("visuals")
 crankshaft = NodePath("..")
 pistonPosition = 1.0
 currentStorkeType = 1
@@ -91,8 +91,6 @@ stroke = 5.51649
 additionalUpwardHeight = 0.2
 engineDisplacement = 32.609
 pistonHeight = 1.0
-combustionAirDensityModifier = 200.0
-combustionTemperature = 200.0
 
 [node name="pistone" type="MeshInstance3D" parent="crankShaft/Cylinder"]
 transform = Transform3D(2.695, 0, 0, 0, 1, 0, 0, 0, 2.695, 0, 5.01649, 0)
@@ -105,11 +103,16 @@ mesh = SubResource("CylinderMesh_nxogm")
 skeleton = NodePath("../../..")
 surface_material_override/0 = SubResource("ShaderMaterial_m7jmp")
 
-[node name="Cylinder2" type="Node3D" parent="crankShaft" node_paths=PackedStringArray("gasInsideCylinder", "piston", "crankshaft")]
+[node name="visuals" type="Node3D" parent="crankShaft/Cylinder" node_paths=PackedStringArray("main", "gasInsideCylinder", "piston")]
+script = ExtResource("4_m7jmp")
+main = NodePath("..")
+gasInsideCylinder = NodePath("../gas")
+piston = NodePath("../pistone")
+
+[node name="Cylinder2" type="Node3D" parent="crankShaft" node_paths=PackedStringArray("visuals", "crankshaft")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23.9435, 20.6567)
 script = ExtResource("1_nxogm")
-gasInsideCylinder = NodePath("gas")
-piston = NodePath("pistone")
+visuals = NodePath("visuals")
 crankshaft = NodePath("..")
 cylinderIndex = 1
 angleOffset = 180.0
@@ -120,8 +123,6 @@ stroke = 5.51649
 additionalUpwardHeight = 0.2
 engineDisplacement = 32.609
 pistonHeight = 1.0
-combustionAirDensityModifier = 200.0
-combustionTemperature = 200.0
 
 [node name="pistone" type="MeshInstance3D" parent="crankShaft/Cylinder2"]
 transform = Transform3D(2.695, 0, 0, 0, 1, 0, 0, 0, 2.695, 0, -4.98351, 0)
@@ -134,11 +135,16 @@ mesh = SubResource("CylinderMesh_nxogm")
 skeleton = NodePath("../../..")
 surface_material_override/0 = SubResource("ShaderMaterial_y2354")
 
-[node name="Cylinder3" type="Node3D" parent="crankShaft" node_paths=PackedStringArray("gasInsideCylinder", "piston", "crankshaft")]
+[node name="visuals" type="Node3D" parent="crankShaft/Cylinder2" node_paths=PackedStringArray("main", "gasInsideCylinder", "piston")]
+script = ExtResource("4_m7jmp")
+main = NodePath("..")
+gasInsideCylinder = NodePath("../gas")
+piston = NodePath("../pistone")
+
+[node name="Cylinder3" type="Node3D" parent="crankShaft" node_paths=PackedStringArray("visuals", "crankshaft")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23.9435, 31.3133)
 script = ExtResource("1_nxogm")
-gasInsideCylinder = NodePath("gas")
-piston = NodePath("pistone")
+visuals = NodePath("visuals")
 crankshaft = NodePath("..")
 cylinderIndex = 2
 angleOffset = 540.0
@@ -148,8 +154,6 @@ stroke = 5.51649
 additionalUpwardHeight = 0.2
 engineDisplacement = 32.609
 pistonHeight = 1.0
-combustionAirDensityModifier = 200.0
-combustionTemperature = 200.0
 
 [node name="pistone" type="MeshInstance3D" parent="crankShaft/Cylinder3"]
 transform = Transform3D(2.695, 0, 0, 0, 1, 0, 0, 0, 2.695, 0, -4.98351, 0)
@@ -162,11 +166,16 @@ mesh = SubResource("CylinderMesh_nxogm")
 skeleton = NodePath("../../..")
 surface_material_override/0 = SubResource("ShaderMaterial_ni31j")
 
-[node name="Cylinder4" type="Node3D" parent="crankShaft" node_paths=PackedStringArray("gasInsideCylinder", "piston", "crankshaft")]
+[node name="visuals" type="Node3D" parent="crankShaft/Cylinder3" node_paths=PackedStringArray("main", "gasInsideCylinder", "piston")]
+script = ExtResource("4_m7jmp")
+main = NodePath("..")
+gasInsideCylinder = NodePath("../gas")
+piston = NodePath("../pistone")
+
+[node name="Cylinder4" type="Node3D" parent="crankShaft" node_paths=PackedStringArray("visuals", "crankshaft")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23.9435, 41.97)
 script = ExtResource("1_nxogm")
-gasInsideCylinder = NodePath("gas")
-piston = NodePath("pistone")
+visuals = NodePath("visuals")
 crankshaft = NodePath("..")
 cylinderIndex = 3
 angleOffset = 360.0
@@ -177,8 +186,6 @@ stroke = 5.51649
 additionalUpwardHeight = 0.2
 engineDisplacement = 32.609
 pistonHeight = 1.0
-combustionAirDensityModifier = 200.0
-combustionTemperature = 200.0
 
 [node name="pistone" type="MeshInstance3D" parent="crankShaft/Cylinder4"]
 transform = Transform3D(2.695, 0, 0, 0, 1, 0, 0, 0, 2.695, 0, 5.01649, 0)
@@ -191,8 +198,14 @@ mesh = SubResource("CylinderMesh_nxogm")
 skeleton = NodePath("../../..")
 surface_material_override/0 = SubResource("ShaderMaterial_xlvrw")
 
-[node name="Camera3D" type="Camera3D" parent="crankShaft/Cylinder4"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 50.4014, 0, -15.3884)
+[node name="visuals" type="Node3D" parent="crankShaft/Cylinder4" node_paths=PackedStringArray("main", "gasInsideCylinder", "piston")]
+script = ExtResource("4_m7jmp")
+main = NodePath("..")
+gasInsideCylinder = NodePath("../gas")
+piston = NodePath("../pistone")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.974173, 0.225801, 0, -0.225801, 0.974173, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 50.4014, 23.9435, 26.5816)

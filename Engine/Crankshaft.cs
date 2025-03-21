@@ -41,7 +41,7 @@ public partial class Crankshaft : Node3D
             HandlePhysics((float)delta);
 
 
-        UodateCrankShaftVisuals();
+        UpdateVisuals();
         base._Process(delta);
     }
     private void HandlePhysics(float delta)
@@ -49,7 +49,7 @@ public partial class Crankshaft : Node3D
         float torque = 0;
         foreach (Cylinder cylinder in cylinders)
         {
-            cylinder.UpdateCurrentConditionsInsideCylinder();
+            cylinder.combustion.UpdateCurrentConditionsInsideCylinder();
             torque += cylinder.GetCurrentTorque();
         }
 
@@ -59,7 +59,7 @@ public partial class Crankshaft : Node3D
         shaftAngleDeg += angularVelocityDeg * delta;
     }
 
-    private void UodateCrankShaftVisuals()
+    private void UpdateVisuals()
     {
 
         mesh.Scale = new(1, crankshaftLength, 1);
