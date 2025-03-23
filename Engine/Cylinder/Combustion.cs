@@ -23,6 +23,7 @@ public class Combustion
     // Substrates mas: 12.5 * 32(O2) + 114.23(C8H18) = 514.23g
     // Products mas: 8*44(CO2)+ 9*(34) = 658
 
+    // I think that mass shouldn't change inside chemic reaction SOOOOOOOOOOO...... https://en.wikipedia.org/wiki/Conservation_of_mass
     private const float burnMasChange = 1.2795830659f;
 
     private static float IdealOctaneBurnGramsFromAirGrams(float airG, out float oxygenG)
@@ -32,7 +33,7 @@ public class Combustion
     }
 
 
-    //WARN: I'm rounding those values so calculations might be less accurate but for now I don't care
+    //WARN: I'm rounding those values so calculations might be less accurate but I don't care for now
 
     // So lets say that we have 100g of Air
     // Only 21g of it is oxygen and 79g is nitrogen 
@@ -54,7 +55,7 @@ public class Combustion
     /// calculates how much fuel you can burn using IdealOctaneBurnGramsFromAirGrams()
     ///  then calculates how temperature && mas will change and applies it
     /// </summary>
-    private void BurnCurrentAir()
+    public void BurnCurrentAir()
     {
 
         float fuelMassG = IdealOctaneBurnGramsFromAirGrams(main.gasMasInsideCylinder, out float oxygenG);
@@ -73,36 +74,11 @@ public class Combustion
 
     }
 
-    private bool fuelIsBurned;
-    private bool exhaustedGas;
-
-    public void UpdateCurrentConditionsInsideCylinder()
-    {
-        var strokeType = main.CurrentStrokeType;
-        if (strokeType == Cylinder.StrokeType.Combustion && !fuelIsBurned)
-        {
-            fuelIsBurned = true;
-            exhaustedGas = false;
-            BurnCurrentAir();
-        } // TODO: Make amount of exhaust gasses and air change over time
-        else if (strokeType == Cylinder.StrokeType.Exhaust && !exhaustedGas)
-        {
-            exhaustedGas = true;
-            fuelIsBurned = false;
-            main.gasTemperatureInsideCylinder = ambientAirTemperature;
-
-            // WARN: This is not ideal because cylinder is moving and not whole cylinder will be filled with air
-            // Also some of the 
-            float maxVolume = main.bore * (main.stroke + main.additionalUpwardHeight);
-            main.gasMasInsideCylinder = ambientAirDensity * maxVolume;
-        }
-    }
-
 
 
     public const float GasConstant = 8.314f;
-    private const float ambientAirDensity = 1.225f; // kg/m3
-    private const float ambientAirTemperature = 288.15f; // Kelvins
+    public const float ambientAirDensity = 1.225f; // kg/m3
+    public const float ambientAirTemperature = 288.15f; // Kelvins
 
 
 }
