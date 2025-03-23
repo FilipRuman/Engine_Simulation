@@ -13,10 +13,10 @@ public partial class CylinderVisuals : Node3D
         }
 
 
-        piston.Position = new(0, main.stroke * main.pistonPosition - main.pistonHeight / 2f, 0);
+        piston.Position = new(0, main.strokeLength * main.pistonPosition - main.pistonHeight / 2f, 0);
 
-        var height = main.stroke + main.additionalUpwardHeight - main.stroke * main.pistonPosition;
-        gasInsideCylinder.Position = new(0, main.stroke + main.additionalUpwardHeight - height / 2f, 0);
+        var height = main.strokeLength + main.additionalUpwardHeight - main.strokeLength * main.pistonPosition;
+        gasInsideCylinder.Position = new(0, main.strokeLength + main.additionalUpwardHeight - height / 2f, 0);
         gasInsideCylinder.Scale = new(main.bore, height, main.bore);
 
         var material = (ShaderMaterial)gasInsideCylinder.GetSurfaceOverrideMaterial(0);

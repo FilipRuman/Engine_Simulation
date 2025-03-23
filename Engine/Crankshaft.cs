@@ -17,6 +17,7 @@ public partial class Crankshaft : Node3D
     [Export] public float shaftAngleDeg = 0;
     [Export] public float angularVelocityDeg = 1;
 
+    public float RevolutionsPerSecond => Mathf.DegToRad(angularVelocityDeg) / Mathf.Tau;
 
     [ExportGroup("cylinders poistions settings")]
     [Export] public float crankshaftLength = 10f;
