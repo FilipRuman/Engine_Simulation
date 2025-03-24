@@ -5,6 +5,7 @@ public partial class CylinderVisuals : Node3D
     [Export] Cylinder main;
     [Export] private MeshInstance3D gasInsideCylinder;
     [Export] private MeshInstance3D piston;
+
     public void UpdateMeshes()
     {
         if (Engine.IsEditorHint())
@@ -20,6 +21,6 @@ public partial class CylinderVisuals : Node3D
         gasInsideCylinder.Scale = new(main.bore, height, main.bore);
 
         var material = (ShaderMaterial)gasInsideCylinder.GetSurfaceOverrideMaterial(0);
-        material.SetShaderParameter("strokeIndex", (int)main.CurrentStrokeType);
+        material.SetShaderParameter("pressure", main.currentPressure);
     }
 }

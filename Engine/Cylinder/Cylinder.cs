@@ -10,7 +10,6 @@ public partial class Cylinder : Node3D
         Combustion
     }
     public Combustion combustion = new();
-    [Export] AirFlow airFlow;
     [Export] CylinderVisuals visuals;
 
     [Export] public Crankshaft crankshaft;
@@ -19,7 +18,7 @@ public partial class Cylinder : Node3D
     [ExportGroup("Current values")]
     [Export(PropertyHint.Range, "0,1,")] public float pistonPosition;
     [Export] private float currentTorque;
-    [Export] private StrokeType currentStorkeType;
+    [Export] private StrokeType currentStrokeType;
     [ExportGroup("engine size (cm^3)")]
     /// m
     [Export] public float bore;
@@ -44,12 +43,10 @@ public partial class Cylinder : Node3D
     {
         if (Engine.IsEditorHint())
         {
-            currentTorque = GetCurrentTorque();
             strokeLength = crankshaft.GetStroke();
             Position = crankshaft.GetRelativeCylinderPlacement(cylinderIndex);
             CalculateDisplacement();
-            currentTorque = CalculateTorque(1);
-            currentStorkeType = CurrentStrokeType;
+            currentStrokeType = CurrentStrokeType;
         }
 
         pistonPosition = (crankshaft.GetPistonPositionAtAngle(CurrentAngleDegrees) - Position.Y) / strokeLength;
@@ -60,7 +57,7 @@ public partial class Cylinder : Node3D
     private bool fuelIsBurned;
     private bool exhaustedGas;
 
-    public void UpdateCurrentConditionsInsideCylinder(float deltaTime)
+    public void UpdateCurrentConditionsInsideCylinder(float deltaTime, out float torque)
     {
         switch (CurrentStrokeType)
         {
@@ -84,38 +81,50 @@ public partial class Cylinder : Node3D
                 }
                 break;
             case StrokeType.Intake:
-                gasMasInsideCylinder = airFlow.CalculateMassFlowOfAir(deltaTime);
+                gasMasInsideCylinder += crankshaft.airFlow.CalculateMassFlowOfAir(deltaTime);
 
                 break;
             case StrokeType.Compression:
 
                 break;
-
-
         }
+        //https://en.wikipedia.org/wiki/First_law_of_thermodynamics
+        ApplyFirstLawOfThremodynamics(out float work);
+        torque = work / Mathf.Tau;
     }
 
+
+
+    private float lastVolume;
+    private float lastPressure;
+    private void ApplyFirstLawOfThremodynamics(out float work)
+    {
+
+        float currentVolume = CurrentGasVolume;
+        currentPressure = gasMasInsideCylinder * Combustion.GasConstant * gasTemperatureInsideCylinder / currentVolume;
+
+        float pressureChange = currentPressure - lastPressure;
+        float averagePressure = (currentPressure + lastPressure) / 2f;
+        float volumeChange = currentVolume - lastVolume;
+        work = averagePressure * volumeChange - (pressureChange * crankshaft.pressureChangeFrictionModifier);
+
+        //TODO:
+        float heatFormCombustion = 0;
+
+        float internalEnergyChange = heatFormCombustion - work;
+        float specificHeat = SpecificHeat.GetCurrentSpecificHeat(this);
+        float temperatureChange = internalEnergyChange / (gasMasInsideCylinder * specificHeat);
+
+        lastVolume = currentVolume;
+        lastPressure = currentPressure;
+    }
 
 
     public float gasMasInsideCylinder = 1000;  // grams
     public float gasTemperatureInsideCylinder = 10000; //Kelvins
-    private float GetCurrentForce()
-    {
-        float mas = gasMasInsideCylinder;
-        float temperature = gasTemperatureInsideCylinder;
-        float volume = CurrentGasVolume;
-        float absolutePressure = mas * Combustion.GasConstant * temperature / volume;
 
-        float radius = bore / 2f;
-        float area = Mathf.Pi * radius * radius;
-        float force = area * absolutePressure;
-
-        return force;
-    }
-    public float GetCurrentTorque()
-    {
-        return CalculateTorque(GetCurrentForce());
-    }
+    const float AtmospherePressure = 101325f; //Pa
+    public float currentPressure;
 
     private void CalculateDisplacement()
     {
@@ -123,18 +132,10 @@ public partial class Cylinder : Node3D
         engineDisplacement = Mathf.Pi * radius * radius * (strokeLength + additionalUpwardHeight);
     }
 
-
-
-    float CalculateTorque(float linearForce)
-    {
-        //TODO: Use one from this paper's first part https://crimsonpublishers.com/eme/pdf/EME.000582.pdf         
-        return crankshaft.crankPinLength * linearForce * Mathf.Sin(Mathf.DegToRad(CurrentAngleDegrees));
-    }
-
-
     public override void _Ready()
     {
         combustion.main = this;
+        crankshaft.airFlow.sampleCylinder = this;
         base._Ready();
     }
 }

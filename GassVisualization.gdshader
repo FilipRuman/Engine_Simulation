@@ -1,17 +1,13 @@
 shader_type spatial;
-uniform int strokeIndex;
+uniform sampler2D pressureSampler;
+uniform float pressure;
+uniform float minPressure;
+uniform float maxPressure;
 
 void fragment() {
 vec3 albedo;
-if(strokeIndex == 0){ // exhaust
-	albedo = vec3(0,0,0);
-}else if(strokeIndex == 1){
-	albedo = vec3(.46,.67,1); //intake -> light blue
-}else if(strokeIndex == 2){
-	albedo = vec3(1,.98,.48); //compression -> light yellow
-}else{
-	albedo = vec3(1,0,0); // power -> red
-}
+float scaledPressure = distance(minPressure, pressure) / distance(minPressure,maxPressure);
+albedo = texture(pressureSampler,vec2(clamp(scaledPressure,0.001,.999),0)).xyz;
 
 ALBEDO = albedo;
 }

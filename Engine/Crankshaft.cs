@@ -5,6 +5,7 @@ using Godot;
 public partial class Crankshaft : Node3D
 {
     [Export] private MeshInstance3D mesh;
+    [Export] public AirFlow airFlow;
 
     [Export] private Node3D crankPinSpawnPoint;
     [Export] private PackedScene crankPinPrefab;
@@ -28,18 +29,38 @@ public partial class Crankshaft : Node3D
     [Export] public float rodLength = 0;
     [Export] public float crankPinLength = 0;
 
+    [Export(PropertyHint.Range, "0,1,")] public float throttle;
+
+    [Export] Slider throttleSlider;
+    [Export] Label angularVelocityText;
+    [Export] Label pressureInsideCylinder1;
+    [Export] Label totalTorque;
+    [Export] Label rpm;
+    [Export] CheckButton starterButton;
+    [Export] private float starterTorque;
 
 
+    [Export] Label gameFps;
+
+    [Export] private float mechanicalDragModifier;
+
+    [Export] public float pressureChangeFrictionModifier = 3;
+    public override void _PhysicsProcess(double delta)
+    {
+        HandlePhysics((float)delta);
+
+        base._PhysicsProcess(delta);
+    }
     public override void _Process(double delta)
     {
+        gameFps.Text = $"FPS {Engine.GetFramesPerSecond()}";
+        rpm.Text = $"RPM: {Mathf.RoundToInt(RevolutionsPerSecond * 60f)}";
+        throttle = (float)throttleSlider.Value;
+        angularVelocityText.Text = $"Angular velocity: {Mathf.RoundToInt(angularVelocityDeg)}";
+        pressureInsideCylinder1.Text = $"Pressure :\n{cylinders[0].currentPressure} \n {cylinders[1].currentPressure} \n {cylinders[2].currentPressure} \n {cylinders[3].currentPressure}";
 
-
-
-        //TODO: make that only in editor
         if (Engine.IsEditorHint())
             SpawnCrankPins();
-        else
-            HandlePhysics((float)delta);
 
 
         UpdateVisuals();
@@ -50,10 +71,13 @@ public partial class Crankshaft : Node3D
         float torque = 0;
         foreach (Cylinder cylinder in cylinders)
         {
-            cylinder.combustion.UpdateCurrentConditionsInsideCylinder();
-            torque += cylinder.GetCurrentTorque();
+            cylinder.UpdateCurrentConditionsInsideCylinder(delta, out float addTorque);
+            torque += addTorque;
         }
-
+        torque -= mechanicalDragModifier * delta * angularVelocityDeg;
+        if (starterButton.ButtonPressed)
+            torque += delta * starterTorque;
+        totalTorque.Text = $"totalTorque: {torque}";
         var angularAcceleration = torque / momentOfInertia;
         angularVelocityDeg += angularAcceleration * delta;
 
@@ -72,6 +96,7 @@ public partial class Crankshaft : Node3D
 
     public override void _Ready()
     {
+        airFlow.sampleCylinder = cylinders[0];
         SpawnCrankPins();
         base._Ready();
     }

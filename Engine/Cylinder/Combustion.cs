@@ -4,6 +4,7 @@ using Godot;
 public class Combustion
 {
     public Cylinder main;
+
     //let's say that the gasoline is C8H18 - Octane  https://en.wikipedia.org/wiki/Octane
     // you shouldn't do half's of mol but it doesn't really matter
     // so reaction of burning it as gas goes like this:  12.5(O2) + C8H18 -> 8(CO2) + 9(H2O)
@@ -46,9 +47,9 @@ public class Combustion
     // so we have 16,063g of H2O
 
 
-    private const float ExhaustFumesN2Ratio = 0.696f; //79 /113.545g
-    private const float ExhaustFumesCO2Ratio = 0.163f; //18.482 /113.545g
-    private const float ExhaustFumesH2ORatio = 0.141f;//16.063 /113.545g
+    public const float ExhaustFumesN2Ratio = 0.696f; //79 /113.545g
+    public const float ExhaustFumesCO2Ratio = 0.163f; //18.482 /113.545g
+    public const float ExhaustFumesH2ORatio = 0.141f;//16.063 /113.545g
     /// <summary> 
     /// WARN: this is not the most accurate because I assume that the burning process happens in 1 frame but that's not true at all
     ///
@@ -63,17 +64,12 @@ public class Combustion
 
         float gasMasChange = (burnMasChange - 1) * (fuelMassG + oxygenG);
         main.gasMasInsideCylinder += gasMasChange;
-
-        float N2Mass = main.gasMasInsideCylinder * ExhaustFumesN2Ratio;
-        float CO2Mass = main.gasMasInsideCylinder * ExhaustFumesCO2Ratio;
-        float H2OMass = main.gasMasInsideCylinder * ExhaustFumesH2ORatio;
+        float specificHeat = SpecificHeat.GetCurrentSpecificHeat(main);
 
         float heatKJ = HeatFormOctaneCombustion * fuelMassG;
-        float specificHeat = SpecificHeat.GetSpecificHeatOfExhaustFumes(main.gasTemperatureInsideCylinder, main.gasMasInsideCylinder, CO2Mass, H2OMass, N2Mass);
         float temperatureChange = heatKJ / (main.gasMasInsideCylinder / 1000 * specificHeat); // it doesn't matter if this is in Kelvins or Celsius i think.....
 
     }
-
 
 
     public const float GasConstant = 8.314f;

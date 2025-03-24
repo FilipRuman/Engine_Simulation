@@ -3,21 +3,48 @@ public static class SpecificHeat
 {
     // I fucking love this site <3 https://www.engineeringtoolbox 
 
+
+    // I assume that 100% of fuel is fully burned, no CO, no O3, all of the pruducts from combustion are exhausted in intake && compression stroke
+    // and that air is only N2 && O2 
+    public static float GetCurrentSpecificHeat(Cylinder cylinder)
+    {
+        switch (cylinder.CurrentStrokeType)
+        {
+
+            case Cylinder.StrokeType.Combustion:
+                return GetSpecificHeatOfExhaustFumes(cylinder.gasTemperatureInsideCylinder);
+            // the same thing but c# is fucked up so I can't use ||
+            case Cylinder.StrokeType.Exhaust:
+                return GetSpecificHeatOfExhaustFumes(cylinder.gasTemperatureInsideCylinder);
+
+
+            case Cylinder.StrokeType.Intake:
+                return GetSpecificHeatOfExhaustFumes(cylinder.gasTemperatureInsideCylinder);
+            // the same thing but c# is fucked up so I can't use ||
+            case Cylinder.StrokeType.Compression:
+                return GetSpecificHeatOfAir(cylinder.gasTemperatureInsideCylinder);
+        }
+
+        return 0; // this should never happen but c# throws error So...
+    }
+
     //  I'm using isochoric pressure
     // I'm just using linear interpolation for convenience
     // It's not great for accuracy but it's ok for now
     // I might later change it to use something like godot's curves
 
-    public static float GetSpecificHeatOfExhaustFumes(float temperature, float totalMixtureMas, float CO2Mas, float H2OMas, float N2Mas)
+    public static float GetSpecificHeatOfExhaustFumes(float temperature)
     {
-        float massFractionCO2 = CO2Mas / totalMixtureMas;
-        float massFractionH2O = H2OMas / totalMixtureMas;
-        float massFractionN2 = N2Mas / totalMixtureMas;
-
-        return CO2(temperature) * massFractionCO2 + H2O(temperature) * massFractionH2O + N2(temperature) * massFractionN2;
+        return CO2(temperature) * Combustion.ExhaustFumesCO2Ratio + H2O(temperature) * Combustion.ExhaustFumesH2ORatio + N2(temperature) * Combustion.ExhaustFumesN2Ratio;
+    }
+    // Specific GasConstants: https://www.engineeringtoolbox.com/individual-universal-gas-constant-d_588.html
+    public static float GetSpecificHeatOfAir(float temperature)
+    {
+        temperature -= 175f;
+        return Mathf.Lerp(0.7172f, 0.9535f, temperature / 1725f);
     }
 
-    // Specific GasConstants: https://www.engineeringtoolbox.com/individual-universal-gas-constant-d_588.html
+
     ///kJ/kgK
     ///https://www.engineeringtoolbox.com/carbon-dioxide-d_974.html
     private static float CO2(float temperature)
@@ -54,3 +81,4 @@ public static class SpecificHeat
         return Cp - specificGasConstant;
     }
 }
+
