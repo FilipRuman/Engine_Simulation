@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dousinkic130u"]
+[gd_scene load_steps=17 format=3 uid="uid://dousinkic130u"]
 
 [ext_resource type="Script" uid="uid://br8ltumy454oj" path="res://Engine/Cylinder/Cylinder.cs" id="1_nxogm"]
 [ext_resource type="Script" uid="uid://b7ba3uaxjle7" path="res://Engine/Crankshaft.cs" id="2_3253y"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://uqcqw4fkolyo" path="res://Engine/Cylinder/CylinderVisuals.cs" id="4_m7jmp"]
 [ext_resource type="Shader" uid="uid://d2po6ur3ne678" path="res://GassVisualization.gdshader" id="4_u3cyc"]
 [ext_resource type="Script" uid="uid://0ahy3760o3gk" path="res://Engine/Cylinder/AirFlow.cs" id="4_y2354"]
+[ext_resource type="PackedScene" uid="uid://dsg5g4ti0n3gt" path="res://Sounds/soundscene.tscn" id="7_ni31j"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_u3cyc"]
 top_radius = 1.0
@@ -38,7 +39,7 @@ width = 500
 render_priority = 0
 shader = ExtResource("4_u3cyc")
 shader_parameter/pressureSampler = SubResource("GradientTexture1D_ni31j")
-shader_parameter/pressure = 0.0
+shader_parameter/pressure = 2.19865e+06
 shader_parameter/minPressure = -100000.0
 shader_parameter/maxPressure = 999999.0
 
@@ -46,7 +47,7 @@ shader_parameter/maxPressure = 999999.0
 render_priority = 0
 shader = ExtResource("4_u3cyc")
 shader_parameter/pressureSampler = SubResource("GradientTexture1D_ni31j")
-shader_parameter/pressure = 3.20077e+06
+shader_parameter/pressure = 7.10309e+06
 shader_parameter/minPressure = -100000.0
 shader_parameter/maxPressure = 999999.0
 
@@ -62,21 +63,22 @@ shader_parameter/maxPressure = 999999.0
 render_priority = 0
 shader = ExtResource("4_u3cyc")
 shader_parameter/pressureSampler = SubResource("GradientTexture1D_ni31j")
-shader_parameter/pressure = 3.7567e+06
+shader_parameter/pressure = 2.49645e+06
 shader_parameter/minPressure = -100000.0
 shader_parameter/maxPressure = 999999.0
 
 [node name="Scene" type="Node3D"]
 
-[node name="crankShaft" type="Node3D" parent="." node_paths=PackedStringArray("mesh", "airFlow", "crankPinSpawnPoint", "cylinders", "throttleSlider", "angularVelocityText", "pressureInsideCylinder1", "totalTorque", "rpm", "starterButton", "gameFps")]
+[node name="crankShaft" type="Node3D" parent="." node_paths=PackedStringArray("mesh", "airFlow", "crankPinSpawnPoint", "soundController", "cylinders", "throttleSlider", "angularVelocityText", "pressureInsideCylinder1", "totalTorque", "rpm", "starterButton", "gameFps")]
 script = ExtResource("2_3253y")
 mesh = NodePath("crankShaftMesh")
 airFlow = NodePath("Airflow")
 crankPinSpawnPoint = NodePath("crankPinSpawnPoint")
 crankPinPrefab = ExtResource("2_u3cyc")
+soundController = NodePath("../Scene/Engine controller")
 momentOfInertia = 3278.69
-shaftAngleDeg = 88.9155
-angularVelocityDeg = 0.0224049
+shaftAngleDeg = 125.74
+angularVelocityDeg = 9.37513e-16
 crankshaftLength = 66.345
 cylindersPadding = 12.0
 cylinders = [NodePath("Cylinder"), NodePath("Cylinder2"), NodePath("Cylinder3"), NodePath("Cylinder4")]
@@ -101,11 +103,11 @@ intakeVelocityModifier = 0.6
 flowEfficiency = 0.723
 
 [node name="crankPinSpawnPoint" type="Node3D" parent="crankShaft"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(-0.584104, -0.811679, 0, 0.811679, -0.584104, 0, 0, 0, 1, 0, 0, 0)
 rotation_order = 0
 
 [node name="crankShaftMesh" type="MeshInstance3D" parent="crankShaft"]
-transform = Transform3D(0.0189278, 0, 0.999821, 0.999821, -2.90003e-06, -0.0189278, 4.37036e-08, 66.345, -8.27362e-10, 0, 0, 33.1725)
+transform = Transform3D(-0.584104, 0, 0.811679, 0.811679, -2.90003e-06, 0.584104, 3.54796e-08, 66.345, 2.5532e-08, 0, 0, 33.1725)
 rotation_order = 0
 mesh = SubResource("CylinderMesh_u3cyc")
 
@@ -114,7 +116,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23.9435, 12)
 script = ExtResource("1_nxogm")
 visuals = NodePath("visuals")
 crankshaft = NodePath("..")
-pistonPosition = 0.0171895
+pistonPosition = -0.497247
 currentStrokeType = 1
 bore = 4.47
 strokeLength = 5.51649
@@ -123,13 +125,13 @@ engineDisplacement = 89.7087
 pistonHeight = 1.0
 
 [node name="pistone" type="MeshInstance3D" parent="crankShaft/Cylinder"]
-transform = Transform3D(4.47, 0, 0, 0, 1, 0, 0, 0, 4.47, 0, -0.405174, 0)
+transform = Transform3D(4.47, 0, 0, 0, 1, 0, 0, 0, 4.47, 0, -3.24306, 0)
 mesh = SubResource("CylinderMesh_nxogm")
 skeleton = NodePath("../../..")
 surface_material_override/0 = SubResource("ShaderMaterial_y2354")
 
 [node name="gas" type="MeshInstance3D" parent="crankShaft/Cylinder"]
-transform = Transform3D(4.47, 0, 0, 0, 5.62167, 0, 0, 0, 4.47, 0, 2.90566, 0)
+transform = Transform3D(4.47, 0, 0, 0, 8.45955, 0, 0, 0, 4.47, 0, 1.48671, 0)
 mesh = SubResource("CylinderMesh_nxogm")
 skeleton = NodePath("../../..")
 surface_material_override/0 = SubResource("ShaderMaterial_5juve")
@@ -148,7 +150,7 @@ visuals = NodePath("visuals")
 crankshaft = NodePath("..")
 cylinderIndex = 1
 angleOffset = 180.0
-pistonPosition = -0.0171214
+pistonPosition = 0.561585
 currentStrokeType = 2
 bore = 4.47
 strokeLength = 5.51649
@@ -157,12 +159,12 @@ engineDisplacement = 89.7087
 pistonHeight = 1.0
 
 [node name="pistone" type="MeshInstance3D" parent="crankShaft/Cylinder2"]
-transform = Transform3D(4.47, 0, 0, 0, 1, 0, 0, 0, 4.47, 0, -0.59445, 0)
+transform = Transform3D(4.47, 0, 0, 0, 1, 0, 0, 0, 4.47, 0, 2.59798, 0)
 mesh = SubResource("CylinderMesh_nxogm")
 skeleton = NodePath("../../..")
 
 [node name="gas" type="MeshInstance3D" parent="crankShaft/Cylinder2"]
-transform = Transform3D(4.47, 0, 0, 0, 5.81094, 0, 0, 0, 4.47, 0, 2.81102, 0)
+transform = Transform3D(4.47, 0, 0, 0, 2.61851, 0, 0, 0, 4.47, 0, 4.40723, 0)
 mesh = SubResource("CylinderMesh_nxogm")
 skeleton = NodePath("../../..")
 surface_material_override/0 = SubResource("ShaderMaterial_ni31j")
@@ -180,7 +182,7 @@ visuals = NodePath("visuals")
 crankshaft = NodePath("..")
 cylinderIndex = 2
 angleOffset = 540.0
-pistonPosition = -0.0171217
+pistonPosition = 0.561585
 bore = 4.47
 strokeLength = 5.51649
 additionalUpwardHeight = 0.2
@@ -188,12 +190,12 @@ engineDisplacement = 89.7087
 pistonHeight = 1.0
 
 [node name="pistone" type="MeshInstance3D" parent="crankShaft/Cylinder3"]
-transform = Transform3D(4.47, 0, 0, 0, 1, 0, 0, 0, 4.47, 0, -0.594452, 0)
+transform = Transform3D(4.47, 0, 0, 0, 1, 0, 0, 0, 4.47, 0, 2.59798, 0)
 mesh = SubResource("CylinderMesh_nxogm")
 skeleton = NodePath("../../..")
 
 [node name="gas" type="MeshInstance3D" parent="crankShaft/Cylinder3"]
-transform = Transform3D(4.47, 0, 0, 0, 5.81094, 0, 0, 0, 4.47, 0, 2.81102, 0)
+transform = Transform3D(4.47, 0, 0, 0, 2.61851, 0, 0, 0, 4.47, 0, 4.40723, 0)
 mesh = SubResource("CylinderMesh_nxogm")
 skeleton = NodePath("../../..")
 surface_material_override/0 = SubResource("ShaderMaterial_xlvrw")
@@ -211,7 +213,7 @@ visuals = NodePath("visuals")
 crankshaft = NodePath("..")
 cylinderIndex = 3
 angleOffset = 360.0
-pistonPosition = 0.0171892
+pistonPosition = -0.497248
 currentStrokeType = 3
 bore = 4.47
 strokeLength = 5.51649
@@ -220,12 +222,12 @@ engineDisplacement = 89.7087
 pistonHeight = 1.0
 
 [node name="pistone" type="MeshInstance3D" parent="crankShaft/Cylinder4"]
-transform = Transform3D(4.47, 0, 0, 0, 1, 0, 0, 0, 4.47, 0, -0.405176, 0)
+transform = Transform3D(4.47, 0, 0, 0, 1, 0, 0, 0, 4.47, 0, -3.24306, 0)
 mesh = SubResource("CylinderMesh_nxogm")
 skeleton = NodePath("../../..")
 
 [node name="gas" type="MeshInstance3D" parent="crankShaft/Cylinder4"]
-transform = Transform3D(4.47, 0, 0, 0, 5.62167, 0, 0, 0, 4.47, 0, 2.90566, 0)
+transform = Transform3D(4.47, 0, 0, 0, 8.45955, 0, 0, 0, 4.47, 0, 1.48671, 0)
 mesh = SubResource("CylinderMesh_nxogm")
 skeleton = NodePath("../../..")
 surface_material_override/0 = SubResource("ShaderMaterial_73fnb")
@@ -246,6 +248,23 @@ grow_vertical = 0
 max_value = 1.0
 step = 0.0
 
+[node name="pressure" type="Label" parent="crankShaft"]
+offset_top = 29.0
+offset_right = 142.0
+offset_bottom = 52.0
+text = "Pressure :
+2198645.2 
+ 7103094 
+ 0 
+ 2496451"
+
+[node name="fps" type="Label" parent="crankShaft"]
+offset_left = 986.0
+offset_top = 26.0
+offset_right = 1128.0
+offset_bottom = 49.0
+text = "FPS 144"
+
 [node name="angular velocity" type="Label" parent="crankShaft"]
 anchors_preset = 2
 anchor_top = 1.0
@@ -263,40 +282,31 @@ anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 40.0
 offset_top = -96.0
-offset_right = 191.0
+offset_right = 250.0
 offset_bottom = -73.0
 grow_vertical = 0
-text = "totalTorque: -15.686807"
-
-[node name="pressure" type="Label" parent="crankShaft"]
-offset_top = 29.0
-offset_right = 142.0
-offset_bottom = 52.0
-text = "Pressure :
-0 
- 3200773.5 
- 0 
- 3756700.5"
+text = "totalTorque: -6.5639963E-13"
 
 [node name="rpm" type="Label" parent="crankShaft"]
-offset_left = 35.0
-offset_top = 503.0
-offset_right = 177.0
-offset_bottom = 526.0
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 38.0
+offset_top = -131.0
+offset_right = 180.0
+offset_bottom = -108.0
+grow_vertical = 0
 text = "RPM: 0"
 
-[node name="fps" type="Label" parent="crankShaft"]
-offset_left = 986.0
-offset_top = 26.0
-offset_right = 1128.0
-offset_bottom = 49.0
-text = "FPS 144"
-
 [node name="starter" type="CheckButton" parent="crankShaft"]
-offset_left = 43.0
-offset_top = 525.0
-offset_right = 145.0
-offset_bottom = 556.0
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 28.0
+offset_top = -187.0
+offset_right = 130.0
+offset_bottom = -156.0
+grow_vertical = 0
 text = "Starter"
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
@@ -304,3 +314,18 @@ transform = Transform3D(1, 0, 0, 0, 0.974173, 0.225801, 0, -0.225801, 0.974173, 
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 50.4014, 23.9435, 26.5816)
+
+[node name="Scene" parent="." instance=ExtResource("7_ni31j")]
+
+[node name="Engine synth" parent="Scene" index="0"]
+DistortionAmount = 9.595
+FeedbackAmount = 9.84
+
+[node name="AudioStreamPlayer" parent="Scene/Engine synth" index="0"]
+volume_db = 1.0
+pitch_scale = 6.51051e-21
+
+[node name="Engine controller" parent="Scene" index="3"]
+volumeMinMax = Vector2(1, 10)
+
+[editable path="Scene"]

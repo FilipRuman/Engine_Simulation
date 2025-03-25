@@ -9,6 +9,7 @@ public partial class Crankshaft : Node3D
 
     [Export] private Node3D crankPinSpawnPoint;
     [Export] private PackedScene crankPinPrefab;
+    [Export] private EngineSoundController soundController;
     /// from top dead center
 
     [ExportGroup("Angle relatedStuff")]
@@ -64,6 +65,10 @@ public partial class Crankshaft : Node3D
 
 
         UpdateVisuals();
+        soundController.throttle = throttle;
+        soundController.rpm = RevolutionsPerSecond * 60f;
+
+
         base._Process(delta);
     }
     private void HandlePhysics(float delta)
