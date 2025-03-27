@@ -9,6 +9,8 @@ public partial class Cylinder : Node3D
         Compression,
         Combustion
     }
+    public const float DmToM = 1f / 1000f;
+
     public Combustion combustion = new();
     [Export] CylinderVisuals visuals;
 
@@ -19,16 +21,17 @@ public partial class Cylinder : Node3D
     [Export(PropertyHint.Range, "0,1,")] public float pistonPosition;
     [Export] private float currentTorque;
     [Export] private StrokeType currentStrokeType;
-    [ExportGroup("engine size (cm^3)")]
-    /// m
-    [Export] public float bore;
-    ///m
+    [ExportGroup("engine size (m^3)")]
+    [Export] private float boreDm;
+    [Export] private float displacementDm;
+
+    public float bore => boreDm * DmToM;
+    /// m^3
     [Export] public float strokeLength;
-    /// m
+    /// m^3
     [Export] public float additionalUpwardHeight;
     /// m^3
-    [Export] private float engineDisplacement;
-
+    float displacement;
 
     [ExportGroup("piston settings")]
     [Export] public float pistonHeight;
@@ -57,7 +60,7 @@ public partial class Cylinder : Node3D
     private bool fuelIsBurned;
     private bool exhaustedGas;
 
-    public void UpdateCurrentConditionsInsideCylinder(float deltaTime, out float torque)
+    public void UpdateCurrentConditionsInsideCylinder(float deltaTime, float deltaAngleDegrees, out float torque)
     {
         switch (CurrentStrokeType)
         {
@@ -90,7 +93,10 @@ public partial class Cylinder : Node3D
         }
         //https://en.wikipedia.org/wiki/First_law_of_thermodynamics
         ApplyFirstLawOfThremodynamics(out float work);
-        torque = work / Mathf.Tau;
+        if (deltaAngleDegrees == 0)
+            torque = 0;
+        else
+            torque = work / Mathf.DegToRad(deltaAngleDegrees);
     }
 
 
@@ -129,7 +135,8 @@ public partial class Cylinder : Node3D
     private void CalculateDisplacement()
     {
         var radius = bore / 2;
-        engineDisplacement = Mathf.Pi * radius * radius * (strokeLength + additionalUpwardHeight);
+        displacement = Mathf.Pi * radius * radius * (strokeLength + additionalUpwardHeight);
+        displacementDm = displacement / 10000f;
     }
 
     public override void _Ready()

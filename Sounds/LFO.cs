@@ -47,6 +47,5 @@ public partial class LFO : Node
     {
 
         TargetHz = StartHz * (1 + random.RandfRange(-Depth, Depth));
-        GD.Print($"SelectTarget {Mathf.RoundToInt(TargetHz)} {Mathf.RoundToInt(target.CutoffHz)}");
     }
 }

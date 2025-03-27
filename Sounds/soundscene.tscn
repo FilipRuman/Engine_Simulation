@@ -29,8 +29,7 @@ FeedbackAmount = 1.5
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Engine synth"]
 stream = SubResource("AudioStreamGenerator_xfmxv")
-volume_db = 3.236
-pitch_scale = 10.34
+pitch_scale = 0.001
 mix_target = 2
 max_polyphony = 3
 bus = &"Engine"

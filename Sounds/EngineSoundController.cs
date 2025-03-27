@@ -19,7 +19,6 @@ public partial class EngineSoundController : Node
 
         if (!player.Playing && rpm != 0)
         {
-            GD.Print("Start");
             player.StreamPaused = false;
         }
         if (player.Playing && rpm == 0)
@@ -27,7 +26,7 @@ public partial class EngineSoundController : Node
 
         player.VolumeDb = Mathf.Lerp(volumeMinMax.X, volumeMinMax.Y, throttle);
 
-        player.PitchScale = combustionHz / 100f;
+        player.PitchScale = Mathf.Max(.001f, combustionHz / 100f);
 
         base._Process(delta);
     }
