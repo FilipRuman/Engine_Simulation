@@ -5,22 +5,18 @@ public partial class EngineSoundController : Node
 {
     [Export] AudioStreamPlayer player;
     [Export] NoiseAndSin waveGen;
-    [Export(PropertyHint.Range, "0,1,")] public float throttle;
+    public float throttle;
 
-    [Export] public float rpm;
-    // [Export] Curve2D
-    [Export] public Vector2 pitchMinMax;
+    public float rpm;
     [Export] public Vector2 volumeMinMax;
     public override void _Process(double delta)
     {
         float hz = rpm / 60f;
         float combustionHz = hz / 4f;
-        // waveGen.frequency = combustionHz;
 
         if (!player.Playing && rpm != 0)
-        {
             player.StreamPaused = false;
-        }
+
         if (player.Playing && rpm == 0)
             player.StreamPaused = true;
 

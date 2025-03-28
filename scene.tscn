@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://br8ltumy454oj" path="res://Engine/Cylinder/Cylinder.cs" id="1_nxogm"]
 [ext_resource type="Script" uid="uid://b7ba3uaxjle7" path="res://Engine/Crankshaft.cs" id="2_3253y"]
 [ext_resource type="PackedScene" uid="uid://yr1lm7flecqr" path="res://Engine/crank_pin_new.tscn" id="2_u3cyc"]
-[ext_resource type="Script" uid="uid://c851y26dq0p8q" path="res://Engine/Charts.cs" id="3_xlvrw"]
+[ext_resource type="Script" path="res://Engine/Charts.cs" id="3_xlvrw"]
 [ext_resource type="Script" uid="uid://uqcqw4fkolyo" path="res://Engine/Cylinder/CylinderVisuals.cs" id="4_m7jmp"]
 [ext_resource type="Shader" uid="uid://d2po6ur3ne678" path="res://GassVisualization.gdshader" id="4_u3cyc"]
 [ext_resource type="Script" uid="uid://0ahy3760o3gk" path="res://Engine/Cylinder/AirFlow.cs" id="4_y2354"]
@@ -270,7 +270,7 @@ offset_left = 986.0
 offset_top = 26.0
 offset_right = 1128.0
 offset_bottom = 49.0
-text = "FPS 25"
+text = "FPS 145"
 
 [node name="angular velocity" type="Label" parent="crankShaft"]
 anchors_preset = 2

@@ -9,7 +9,6 @@ public partial class Cylinder : Node3D
         Compression,
         Combustion
     }
-    public const float DmToM = 1f / 1000f;
 
     public Combustion combustion = new();
     [Export] CylinderVisuals visuals;
@@ -25,7 +24,7 @@ public partial class Cylinder : Node3D
     [Export] private float boreDm;
     [Export] private float displacementDm;
 
-    public float bore => boreDm * DmToM;
+    public float bore => boreDm / 1000f;
     /// m^3
     [Export] public float strokeLength;
     /// m^3
@@ -46,13 +45,13 @@ public partial class Cylinder : Node3D
     {
         if (Engine.IsEditorHint())
         {
-            strokeLength = crankshaft.GetStroke();
+            strokeLength = crankshaft.GetStrokeM();
             Position = crankshaft.GetRelativeCylinderPlacement(cylinderIndex);
             CalculateDisplacement();
             currentStrokeType = CurrentStrokeType;
         }
 
-        pistonPosition = (crankshaft.GetPistonPositionAtAngle(CurrentAngleDegrees) - Position.Y) / strokeLength;
+        pistonPosition = (crankshaft.floatDm(CurrentAngleDegrees) - Position.Y) / strokeLength;
         visuals.UpdateMeshes();
 
         base._Process(delta);
