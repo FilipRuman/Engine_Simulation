@@ -11,47 +11,41 @@ public partial class Cylinder : Node3D
     }
 
     public Combustion combustion = new();
+    public AirFlow airFlow;
+    public EngineController engine;
+    public Crankshaft crankshaft;
+
+
     [Export] CylinderVisuals visuals;
 
-    [Export] public Crankshaft crankshaft;
     [Export(PropertyHint.Range, "0,100,")] public uint cylinderIndex = 0;
     [Export] public float angleOffset;
-    [ExportGroup("Current values")]
     [Export(PropertyHint.Range, "0,1,")] public float pistonPosition;
     [Export] private float currentTorque;
     [Export] private StrokeType currentStrokeType;
-    [ExportGroup("engine size (m^3)")]
-    [Export] private float boreDm;
-    [Export] private float displacementDm;
 
-    public float bore => boreDm / 1000f;
-    /// m^3
-    [Export] public float strokeLength;
-    /// m^3
-    [Export] public float additionalUpwardHeight;
-    /// m^3
-    float displacement;
-
-    [ExportGroup("piston settings")]
-    [Export] public float pistonHeight;
 
     public float CurrentAngleDegrees => angleOffset + crankshaft.shaftAngleDeg;
     public StrokeType CurrentStrokeType => (StrokeType)(Mathf.FloorToInt((CurrentAngleDegrees + 180) / 180f) % 4);
-    public float CurrentGasVolume => bore * (strokeLength * (1 - pistonPosition) + additionalUpwardHeight);
+    public float CurrentGasVolume => engine.bore * (engine.strokeLength * (1 - pistonPosition) + engine.additionalUpwardHeight);
 
 
 
     public override void _Process(double delta)
     {
-        if (Engine.IsEditorHint())
+        if (crankshaft == null)
         {
-            strokeLength = crankshaft.GetStrokeM();
-            Position = crankshaft.GetRelativeCylinderPlacement(cylinderIndex);
-            CalculateDisplacement();
-            currentStrokeType = CurrentStrokeType;
+            GD.Print("cramlshaft == null");
+            return;
         }
 
-        pistonPosition = (crankshaft.floatDm(CurrentAngleDegrees) - Position.Y) / strokeLength;
+        if (Engine.IsEditorHint())
+        {
+            Position = crankshaft.visuals.GetRelativeCylinderPlacement(cylinderIndex);
+            currentStrokeType = CurrentStrokeType;
+        }
+        pistonPosition = (crankshaft.GetPistonPositionAtAngle(CurrentAngleDegrees) - Position.Y) / engine.strokeLength;
+
         visuals.UpdateMeshes();
 
         base._Process(delta);
@@ -83,7 +77,7 @@ public partial class Cylinder : Node3D
                 }
                 break;
             case StrokeType.Intake:
-                gasMasInsideCylinder += crankshaft.airFlow.CalculateMassFlowOfAir(deltaTime);
+                gasMasInsideCylinder += airFlow.CalculateMassFlowOfAir(deltaTime);
 
                 break;
             case StrokeType.Compression:
@@ -111,7 +105,7 @@ public partial class Cylinder : Node3D
         float pressureChange = currentPressure - lastPressure;
         float averagePressure = (currentPressure + lastPressure) / 2f;
         float volumeChange = currentVolume - lastVolume;
-        work = averagePressure * volumeChange - (pressureChange * crankshaft.pressureChangeFrictionModifier);
+        work = averagePressure * volumeChange - (pressureChange * engine.pressureChangeFrictionModifier);
 
         //TODO:
         float heatFormCombustion = 0;
@@ -131,17 +125,12 @@ public partial class Cylinder : Node3D
     const float AtmospherePressure = 101325f; //Pa
     public float currentPressure;
 
-    private void CalculateDisplacement()
-    {
-        var radius = bore / 2;
-        displacement = Mathf.Pi * radius * radius * (strokeLength + additionalUpwardHeight);
-        displacementDm = displacement / 10000f;
-    }
 
-    public override void _Ready()
+    public void Start()
     {
         combustion.main = this;
-        crankshaft.airFlow.sampleCylinder = this;
-        base._Ready();
+        visuals.engine = engine;
+        visuals.main = this;
+        visuals.UpdateMeshes();
     }
 }

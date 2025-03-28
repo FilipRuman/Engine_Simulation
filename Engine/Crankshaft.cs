@@ -4,12 +4,11 @@ using Godot;
 [Tool]
 public partial class Crankshaft : Node3D
 {
-
     [ExportGroup("References")]
     [Export] public CrankshaftVisuals visuals;
-    [Export] public AirFlow airFlow;
-    [Export] public Cylinder[] cylinders;
 
+
+    [Export] public EngineController engine;
     [ExportGroup("Angle relatedStuff")]
 
     [Export] public float shaftAngleDeg = 0;
@@ -22,13 +21,7 @@ public partial class Crankshaft : Node3D
     [Export] private float crankPinLengthCm = 0;
 
     public float rodLength => rodLengthCm / 100f;
-    public float crankPinLength => crankPinLength / 100f;
-
-    [ExportGroup("Drag and torque")]
-    [Export(PropertyHint.Range, "0,1,")] public float throttle;
-    [Export] private float starterTorque;
-    [Export] private float mechanicalDragModifier;
-    [Export] public float pressureChangeFrictionModifier = 3;
+    public float crankPinLength => crankPinLengthCm / 100f;
 
     public void UpdateCrankshaftStatsBasedOnDrivetrain(float linearVelocity, float whealRadius, float gearRatio, float delta)
     {
@@ -42,6 +35,13 @@ public partial class Crankshaft : Node3D
         HandleStatisticsSmoothing();
 
         base._Process(delta);
+    }
+    public override void _Ready()
+    {
+        visuals.main = this;
+        visuals.engine = engine;
+        visuals.SpawnCrankPins();
+        base._Ready();
     }
 
     public int currentSmoothingFrame = 0;
@@ -57,27 +57,8 @@ public partial class Crankshaft : Node3D
     }
 
     [Export] public int averageSmoothingFrames;
-    List<float> torques = new();
-    float lastAngleDeg;
-    public float HandlePhysicsAndCalculateTorque(float delta)
-    {
-        //abs so engine doesn't run backwards
-        float deltaAngle = Mathf.Abs(shaftAngleDeg - lastAngleDeg);
-        lastAngleDeg = shaftAngleDeg;
-        float torque = 0;
-        foreach (Cylinder cylinder in cylinders)
-        {
-            cylinder.UpdateCurrentConditionsInsideCylinder(delta, deltaAngle, out float addTorque);
-            torque += addTorque;
-        }
-        torque -= mechanicalDragModifier * delta * angularVelocityDeg;
-        //TODO: change that to keybinding
-        if (visuals.starterButton.ButtonPressed)
-            torque += delta * starterTorque;
+    public List<float> torques = new();
 
-        torques.Add(torque);
-        return torque;
-    }
     private float CalculateAverageTorque()
     {
         float sum = 0;
@@ -90,24 +71,12 @@ public partial class Crankshaft : Node3D
         return sum / (float)count;
     }
 
-
-    public override void _Ready()
-    {
-        airFlow.sampleCylinder = cylinders[0];
-        foreach (Cylinder cylinder in cylinders)
-        {
-            cylinder.currentPressure = 0;
-        }
-        base._Ready();
-    }
     //https://en.wikipedia.org/wiki/Piston_motion_equations
     public float GetPistonPositionAtAngle(float angleInDegrees)
     {
         var angleInRads = Mathf.DegToRad(angleInDegrees);
         return crankPinLength * Mathf.Cos(angleInRads) + Mathf.Sqrt(rodLength * rodLength - crankPinLength * crankPinLength * Mathf.Sin(angleInRads) * Mathf.Sin(angleInRads));
     }
-
-
 
 
     public float GetStroke()

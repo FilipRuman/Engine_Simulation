@@ -2,6 +2,7 @@ using Godot;
 public partial class ChassisMain : Node
 {
     [Export] Crankshaft crankshaft;
+    [Export] EngineController engine;
     [Export] private float mass; // kg
     [Export] private float linearVelocity; // km/h
 
@@ -24,7 +25,7 @@ public partial class ChassisMain : Node
             return;
 
         float currentGearRatio = 1 / gearRatios[gear];
-        float engineTorque = crankshaft.HandlePhysicsAndCalculateTorque((float)delta);
+        float engineTorque = engine.HandlePhysicsAndCalculateTorque((float)delta);
 
         float forceAtTheWheals = (engineTorque * currentGearRatio) / whealRadious;
         const int drivenWheals = 4;
