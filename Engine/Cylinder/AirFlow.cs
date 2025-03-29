@@ -6,9 +6,16 @@ public partial class AirFlow : Node
     public EngineController engine;
     public Crankshaft crankshaft;
 
-    [Export] private float MinValveLift;
-    [Export] private float MaxValveLift;
-    [Export] private float throttleDiameter;
+
+    [Export] private float MinValveLiftCm;
+    [Export] private float MaxValveLiftCm;
+    [Export] private float throttleDiameterCm;
+
+    private float MinValveLift => MinValveLiftCm / 100f;
+    private float MaxValveLift => MaxValveLiftCm / 100f;
+    private float throttleDiameter => throttleDiameterCm / 100f;
+
+
     private float ValveLift => Mathf.Lerp(MinValveLift, MaxValveLift, engine.throttle);
     // also i think it is the same as curtain area Ac
     private float CurrentEffectiveFlowArea => Mathf.Pi * throttleDiameter * ValveLift;

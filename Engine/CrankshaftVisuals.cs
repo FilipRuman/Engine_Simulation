@@ -69,7 +69,7 @@ public partial class CrankshaftVisuals : Node
     {
         gameFps.Text = $"FPS {Engine.GetFramesPerSecond()}";
         rpm.Text = $"RPM: {Mathf.RoundToInt(main.RevolutionsPerSecond * 60f)}";
-        engine.throttle = (float)throttleSlider.Value;
+        throttleSlider.Value = engine.throttle;
 
         angularVelocityText.Text = $"Angular velocity: {Mathf.RoundToInt(main.angularVelocityDeg)}";
 

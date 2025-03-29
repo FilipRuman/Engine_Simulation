@@ -15,9 +15,9 @@ bottom_radius = 1.0
 height = 1.0
 
 [sub_resource type="Curve" id="Curve_5juve"]
-_limits = [46.8304, 1024.0, 0.0, 500.0]
+_limits = [107.603, 310.64, 0.0, 500.0]
 bake_resolution = 1000
-_data = [Vector2(0, 46.8304), 0.0, 0.0, 0, 0, Vector2(500, 1024), 3.38618, 0.0, 0, 0]
+_data = [Vector2(0, 107.603), 0.0, 0.450501, 0, 0, Vector2(500, 271.858), 0.964924, 0.0, 0, 0]
 point_count = 2
 
 [node name="Scene" type="Node3D"]
@@ -27,22 +27,21 @@ script = ExtResource("1_xlvrw")
 airFlow = NodePath("Airflow")
 cylinders = [NodePath("crankShaft/Cylinder"), NodePath("crankShaft/Cylinder2"), NodePath("crankShaft/Cylinder3"), NodePath("crankShaft/Cylinder4")]
 crankshaft = NodePath("crankShaft")
-starterTorque = 1e+06
 mechanicalDragModifier = 4.5
 pressureChangeFrictionModifier = 1.0
-boreDm = 0.64
-displacementDm3 = 0.261315
-strokeLengthDm = 0.702295
+boreDm = 2.2
+displacementDm3 = 11.3739
+strokeLengthDm = 2.88208
 additionalUpwardHeightDm = 0.11
 pistonHeightCm = 3.0
 visualsScale = 36.02
 
 [node name="Airflow" type="Node" parent="Engine controller"]
 script = ExtResource("4_y2354")
-MaxValveLift = 10.0
-throttleDiameter = 0.01
-intakeVelocityModifier = 0.479
-flowEfficiency = 0.458
+MaxValveLiftCm = 80.0
+throttleDiameterCm = 300.0
+intakeVelocityModifier = 0.566
+flowEfficiency = 0.8
 
 [node name="crankShaft" type="Node3D" parent="Engine controller" node_paths=PackedStringArray("visuals", "engine")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.9559, -4.4326)
@@ -51,8 +50,8 @@ visuals = NodePath("visuals")
 engine = NodePath("..")
 shaftAngleDeg = 360.0
 angularVelocityDeg = 1000.0
-rodLengthCm = 1065.73
-crankPinLengthCm = 7.0
+rodLengthCm = 1851.57
+crankPinLengthCm = 28.6
 averageSmoothingFrames = 800
 
 [node name="visuals" type="Node" parent="Engine controller/crankShaft" node_paths=PackedStringArray("chankshaftMesh", "crankPinSpawnPoint", "soundController", "throttleSlider", "angularVelocityText", "totalTorque", "rpm", "starterButton", "gameFps")]
@@ -80,22 +79,16 @@ grow_vertical = 0
 max_value = 1.0
 step = 0.0
 
-[node name="pressure" type="Label" parent="Engine controller/crankShaft/visuals"]
-offset_top = 29.0
-offset_right = 142.0
-offset_bottom = 156.0
-text = "Pressure :
-0 
- 0 
- 0 
- 0"
-
 [node name="fps" type="Label" parent="Engine controller/crankShaft/visuals"]
-offset_left = 986.0
-offset_top = 26.0
-offset_right = 1128.0
-offset_bottom = 49.0
-text = "FPS 59"
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -71.0
+offset_right = 71.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "FPS 144"
+horizontal_alignment = 1
 
 [node name="angular velocity" type="Label" parent="Engine controller/crankShaft/visuals"]
 anchors_preset = 2
@@ -151,26 +144,26 @@ rotation_order = 0
 mesh = SubResource("CylinderMesh_u3cyc")
 
 [node name="Cylinder4" parent="Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.6571, 57.815)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18.5135, 57.815)
 cylinderIndex = 3
 pistonPosition = 1.0
 currentStrokeType = 3
 
 [node name="Cylinder3" parent="Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.6571, 39.7233)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18.5135, 39.7233)
 cylinderIndex = 2
 angleOffset = 540.0
-pistonPosition = -0.993455
+pistonPosition = -0.984673
 currentStrokeType = 2
 
 [node name="Cylinder2" parent="Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.6571, 21.6317)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18.5135, 21.6317)
 cylinderIndex = 1
 angleOffset = 180.0
-pistonPosition = -0.993455
+pistonPosition = -0.984673
 
 [node name="Cylinder" parent="Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.6571, 3.54)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18.5135, 3.54)
 angleOffset = 360.0
 pistonPosition = 1.0
 currentStrokeType = 1
@@ -179,11 +172,13 @@ currentStrokeType = 1
 script = ExtResource("9_5juve")
 crankshaft = NodePath("../crankShaft")
 engine = NodePath("..")
-mass = 30000.0
-linearVelocity = 10.0
-gearRatios = PackedFloat32Array(0.2, 0.4, 0.8, 1.5, 2, 2.5)
+mass = 29810.6
+linearVelocity = 400.0
+breakeTorque = 200000.0
+gearRatios = PackedFloat32Array(0.1, 0.2, 0.325, 0.45, 0.6, 0.75, 0.89, 1, 1.2, 1.4)
 whealRadious = 0.15
-dragModifeir = 600.0
+dragModifeir = 2.975
+starterSpeed = 8.0
 dragBasedOnVelocity = SubResource("Curve_5juve")
 gearText = NodePath("gear")
 linearVelocityText = NodePath("velocity")

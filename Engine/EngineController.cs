@@ -16,7 +16,7 @@ public partial class EngineController : Node
             cylinder.engine = this;
             cylinder.airFlow = airFlow;
             cylinder.crankshaft = crankshaft;
-            cylinder.gasMasInsideCylinder = 0;
+            cylinder.gasMasInsideCylinder = 10;
             cylinder.Start();
         }
         base._Ready();
@@ -37,7 +37,6 @@ public partial class EngineController : Node
     [Export(PropertyHint.Range, "0,1,")] public float throttle;
 
     [ExportGroup("Drag and torque")]
-    [Export] private float starterTorque;
     [Export] private float mechanicalDragModifier;
     [Export] public float pressureChangeFrictionModifier = 3;
 
@@ -78,9 +77,7 @@ public partial class EngineController : Node
             torque += addTorque;
         }
         torque -= mechanicalDragModifier * delta * crankshaft.angularVelocityDeg;
-        //TODO: change that to keybinding
-        if (crankshaft.visuals.starterButton.ButtonPressed)
-            torque += delta * starterTorque;
+
 
         crankshaft.torques.Add(torque);
         return torque;
