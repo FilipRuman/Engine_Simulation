@@ -27,6 +27,7 @@ script = ExtResource("1_xlvrw")
 airFlow = NodePath("Airflow")
 cylinders = [NodePath("crankShaft/Cylinder"), NodePath("crankShaft/Cylinder2"), NodePath("crankShaft/Cylinder3"), NodePath("crankShaft/Cylinder4")]
 crankshaft = NodePath("crankShaft")
+rpmLimit = 20000.0
 mechanicalDragModifier = 4.5
 pressureChangeFrictionModifier = 1.0
 boreDm = 2.2

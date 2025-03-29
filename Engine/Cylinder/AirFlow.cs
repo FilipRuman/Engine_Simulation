@@ -16,9 +16,15 @@ public partial class AirFlow : Node
     private float throttleDiameter => throttleDiameterCm / 100f;
 
 
-    private float ValveLift => Mathf.Lerp(MinValveLift, MaxValveLift, engine.throttle);
+    private float ValveLift()
+    {
+        if (engine.overRPM)
+            return MinValveLift;
+        else
+            return Mathf.Lerp(MinValveLift, MaxValveLift, engine.throttle);
+    }
     // also i think it is the same as curtain area Ac
-    private float CurrentEffectiveFlowArea => Mathf.Pi * throttleDiameter * ValveLift;
+    private float CurrentEffectiveFlowArea => Mathf.Pi * throttleDiameter * ValveLift();
 
     // i don't think there is any way to calculate it
     [Export(PropertyHint.Range, "0.3,0.6,")] private float intakeVelocityModifier = .5f;

@@ -35,7 +35,7 @@ public partial class EngineController : Node
 
 
     [Export(PropertyHint.Range, "0,1,")] public float throttle;
-
+    [Export] private float rpmLimit;
     [ExportGroup("Drag and torque")]
     [Export] private float mechanicalDragModifier;
     [Export] public float pressureChangeFrictionModifier = 3;
@@ -56,6 +56,8 @@ public partial class EngineController : Node
     public float displacement; //m^3
     public float pistonHeight => pistonHeightCm / 100f;
 
+
+    public bool overRPM = false;
     private void CalculateDisplacement()
     {
         var radius = bore / 2f;
@@ -67,6 +69,8 @@ public partial class EngineController : Node
     float lastAngleDeg = 0;
     public float HandlePhysicsAndCalculateTorque(float delta)
     {
+        overRPM = crankshaft.RevolutionsPerSecond * 60f > rpmLimit;
+
         //abs so engine doesn't run backwards
         float deltaAngle = Mathf.Abs(crankshaft.shaftAngleDeg - lastAngleDeg);
         lastAngleDeg = crankshaft.shaftAngleDeg;
