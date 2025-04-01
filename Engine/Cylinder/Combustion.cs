@@ -58,6 +58,8 @@ public class Combustion
     /// </summary>
     public void BurnCurrentAir()
     {
+        if (main.gasMasInsideCylinder == 0)
+            return;
 
         float fuelMassG = IdealOctaneBurnGramsFromAirGrams(main.gasMasInsideCylinder, out float oxygenG);
         main.gasMasInsideCylinder += fuelMassG;
@@ -67,8 +69,9 @@ public class Combustion
         float specificHeat = SpecificHeat.GetCurrentSpecificHeat(main);
 
         float heatKJ = HeatFormOctaneCombustion * fuelMassG;
-        float temperatureChange = heatKJ / (main.gasMasInsideCylinder / 1000 * specificHeat); // it doesn't matter if this is in Kelvins or Celsius i think.....
-
+        float temperatureChange = heatKJ / (main.gasMasInsideCylinder / 1000f /* to kg */ * specificHeat); // it doesn't matter if this is in Kelvins or Celsius i think.....
+        // GD.Print($"temperatureChange {temperatureChange} {heatKJ} {specificHeat} {main.gasMasInsideCylinder} ");
+        main.gasTemperatureInsideCylinder += temperatureChange;
     }
 
 

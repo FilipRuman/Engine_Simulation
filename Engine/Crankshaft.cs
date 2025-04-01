@@ -45,7 +45,7 @@ public partial class Crankshaft : Node3D
     }
 
     public int currentSmoothingFrame = 0;
-    public float averageTorque;
+
     private void HandleStatisticsSmoothing()
     {
         currentSmoothingFrame++;
@@ -53,12 +53,26 @@ public partial class Crankshaft : Node3D
             return;
         currentSmoothingFrame = 0;
 
+
+        visuals.averageTemperature = CalculateAverageTemeperature();
         visuals.averageTorque = CalculateAverageTorque();
     }
 
     [Export] public int averageSmoothingFrames;
     public List<float> torques = new();
+    public List<float> temperatures = new();
 
+    private float CalculateAverageTemeperature()
+    {
+        float sum = 0;
+        foreach (float temperature in temperatures)
+        {
+            sum += temperature;
+        }
+        int count = temperatures.Count;
+        temperatures.Clear();
+        return sum / (float)count;
+    }
     private float CalculateAverageTorque()
     {
         float sum = 0;

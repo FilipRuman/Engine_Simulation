@@ -21,10 +21,15 @@ public partial class CrankshaftVisuals : Node
     [Export] Slider throttleSlider;
     [Export] Label angularVelocityText;
     [Export] Label totalTorque;
+    [Export] Label averageGasTemperature;
+
     [Export] Label rpm;
+    [Export] Label temperature;
     [Export] public CheckButton starterButton;
     [Export] Label gameFps;
 
+
+    public float averageTemperature;
     public float averageTorque;
     public override void _Process(double delta)
     {
@@ -70,14 +75,15 @@ public partial class CrankshaftVisuals : Node
         gameFps.Text = $"FPS {Engine.GetFramesPerSecond()}";
         rpm.Text = $"RPM: {Mathf.RoundToInt(main.RevolutionsPerSecond * 60f)}";
         throttleSlider.Value = engine.throttle;
+        temperature.Text = $"Temperature: {Mathf.RoundToInt(engine.heatHandler.cylinderWallTemperature - 273)}C";
 
         angularVelocityText.Text = $"Angular velocity: {Mathf.RoundToInt(main.angularVelocityDeg)}";
 
-        soundController.throttle = engine.throttle;
+        soundController.throttle = engine.overRPM ? 0 : engine.throttle;
         soundController.rpm = main.RevolutionsPerSecond * 60f;
 
         totalTorque.Text = $"torque: {(int)averageTorque}";
-
+        averageGasTemperature.Text = $"average gas temperature: {(int)engine.cylinders[0].gasTemperatureInsideCylinder}";
 
     }
     private void UpdateCrankShaftAndPinsMeshes()

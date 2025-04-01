@@ -1,4 +1,4 @@
 # Engine_Simulation
- Add rpm limit
-Add better pressure visualization
+Add pistone connection to crankshaft
+Add exhaust gas simulation
 Add break sound - wind  *opt

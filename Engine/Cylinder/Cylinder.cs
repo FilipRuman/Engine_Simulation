@@ -53,6 +53,7 @@ public partial class Cylinder : Node3D
     private bool fuelIsBurned;
     private bool exhaustedGas;
 
+
     public void UpdateCurrentConditionsInsideCylinder(float deltaTime, float deltaAngleDegrees, out float torque)
     {
         switch (CurrentStrokeType)
@@ -81,7 +82,6 @@ public partial class Cylinder : Node3D
 
                 break;
             case StrokeType.Compression:
-
                 break;
         }
         //https://en.wikipedia.org/wiki/First_law_of_thermodynamics
@@ -119,7 +119,7 @@ public partial class Cylinder : Node3D
     }
 
 
-    public float gasMasInsideCylinder = 1000;  // grams
+    public float gasMasInsideCylinder = 0;  // Kg
     public float gasTemperatureInsideCylinder = 10000; //Kelvins
 
     const float AtmospherePressure = 101325f; //Pa

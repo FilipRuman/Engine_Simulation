@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://dousinkic130u"]
+[gd_scene load_steps=12 format=3 uid="uid://dousinkic130u"]
 
 [ext_resource type="Script" uid="uid://ccblf4w2x8ob8" path="res://Engine/EngineController.cs" id="1_xlvrw"]
 [ext_resource type="Script" uid="uid://b7ba3uaxjle7" path="res://Engine/Crankshaft.cs" id="2_3253y"]
+[ext_resource type="Script" uid="uid://bdyfbuaytxbci" path="res://Engine/EngineHeatHandler.cs" id="3_73fnb"]
 [ext_resource type="Script" uid="uid://x1ardn0rs4bd" path="res://Engine/CrankshaftVisuals.cs" id="4_73fnb"]
 [ext_resource type="Script" uid="uid://0ahy3760o3gk" path="res://Engine/Cylinder/AirFlow.cs" id="4_y2354"]
 [ext_resource type="PackedScene" uid="uid://yr1lm7flecqr" path="res://Engine/crank_pin_new.tscn" id="5_xlvrw"]
@@ -22,17 +23,18 @@ point_count = 2
 
 [node name="Scene" type="Node3D"]
 
-[node name="Engine controller" type="Node" parent="." node_paths=PackedStringArray("airFlow", "cylinders", "crankshaft")]
+[node name="Engine controller" type="Node" parent="." node_paths=PackedStringArray("airFlow", "cylinders", "crankshaft", "heatHandler")]
 script = ExtResource("1_xlvrw")
 airFlow = NodePath("Airflow")
 cylinders = [NodePath("crankShaft/Cylinder"), NodePath("crankShaft/Cylinder2"), NodePath("crankShaft/Cylinder3"), NodePath("crankShaft/Cylinder4")]
 crankshaft = NodePath("crankShaft")
+heatHandler = NodePath("Heat handler")
 rpmLimit = 20000.0
 mechanicalDragModifier = 4.5
-pressureChangeFrictionModifier = 1.0
-boreDm = 2.2
-displacementDm3 = 11.3739
-strokeLengthDm = 2.88208
+pressureChangeFrictionModifier = 0.0
+boreDm = 1.765
+displacementDm3 = 2.89868
+strokeLengthDm = 1.07473
 additionalUpwardHeightDm = 0.11
 pistonHeightCm = 3.0
 visualsScale = 36.02
@@ -40,33 +42,44 @@ visualsScale = 36.02
 [node name="Airflow" type="Node" parent="Engine controller"]
 script = ExtResource("4_y2354")
 MaxValveLiftCm = 80.0
-throttleDiameterCm = 300.0
+throttleDiameterCm = 100.0
 intakeVelocityModifier = 0.566
 flowEfficiency = 0.8
 
+[node name="Heat handler" type="Node" parent="Engine controller"]
+script = ExtResource("3_73fnb")
+emissivityOfTheGas = 0.527
+coolantTemperatureDeg = 23.0
+cylinderWallThicknessCm = 10.0
+coolingAreaModifier = 5.0
+heatingAreaModifier = 1.0
+gasVelocityModifier = 0.01
+
 [node name="crankShaft" type="Node3D" parent="Engine controller" node_paths=PackedStringArray("visuals", "engine")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.9559, -4.4326)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.9559, -22.0959)
 script = ExtResource("2_3253y")
 visuals = NodePath("visuals")
 engine = NodePath("..")
 shaftAngleDeg = 360.0
 angularVelocityDeg = 1000.0
-rodLengthCm = 1851.57
-crankPinLengthCm = 28.6
+rodLengthCm = 1210.69
+crankPinLengthCm = 10.7
 averageSmoothingFrames = 800
 
-[node name="visuals" type="Node" parent="Engine controller/crankShaft" node_paths=PackedStringArray("chankshaftMesh", "crankPinSpawnPoint", "soundController", "throttleSlider", "angularVelocityText", "totalTorque", "rpm", "starterButton", "gameFps")]
+[node name="visuals" type="Node" parent="Engine controller/crankShaft" node_paths=PackedStringArray("chankshaftMesh", "crankPinSpawnPoint", "soundController", "throttleSlider", "angularVelocityText", "totalTorque", "averageGasTemperature", "rpm", "temperature", "starterButton", "gameFps")]
 script = ExtResource("4_73fnb")
 chankshaftMesh = NodePath("../crankShaftMesh")
 crankPinSpawnPoint = NodePath("../crankPinSpawnPoint")
 crankPinPrefab = ExtResource("5_xlvrw")
 soundController = NodePath("../../../Scene/Engine controller")
-crankshaftLength = 61.355
-cylindersPadding = 3.54
+crankshaftLength = 120.0
+cylindersPadding = 12.0
 throttleSlider = NodePath("throttle")
 angularVelocityText = NodePath("angular velocity")
 totalTorque = NodePath("torque")
+averageGasTemperature = NodePath("gas temperature")
 rpm = NodePath("rpm")
+temperature = NodePath("temperature")
 starterButton = NodePath("starter")
 gameFps = NodePath("fps")
 
@@ -124,6 +137,28 @@ offset_bottom = -108.0
 grow_vertical = 0
 text = "RPM: 167"
 
+[node name="temperature" type="Label" parent="Engine controller/crankShaft/visuals"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 37.0
+offset_top = -219.0
+offset_right = 179.0
+offset_bottom = -196.0
+grow_vertical = 0
+text = "Temperature: 30C"
+
+[node name="gas temperature" type="Label" parent="Engine controller/crankShaft/visuals"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 42.0
+offset_top = -71.0
+offset_right = 184.0
+offset_bottom = -48.0
+grow_vertical = 0
+text = "average gas temperature: 10000"
+
 [node name="starter" type="CheckButton" parent="Engine controller/crankShaft/visuals"]
 anchors_preset = 2
 anchor_top = 1.0
@@ -140,31 +175,31 @@ transform = Transform3D(0.999999, -1.74845e-07, 0, 1.74845e-07, 0.999999, 0, 0, 
 rotation_order = 0
 
 [node name="crankShaftMesh" type="MeshInstance3D" parent="Engine controller/crankShaft"]
-transform = Transform3D(1, 0, 1.74846e-07, 1.74846e-07, -2.68191e-06, -1, 7.64274e-15, 61.355, -4.37114e-08, 0, 0, 30.6775)
+transform = Transform3D(1, 0, 1.74846e-07, 1.74846e-07, -5.24537e-06, -1, 7.64274e-15, 120, -4.37114e-08, 0, 0, 60)
 rotation_order = 0
 mesh = SubResource("CylinderMesh_u3cyc")
 
 [node name="Cylinder4" parent="Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18.5135, 57.815)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.1065, 108)
 cylinderIndex = 3
 pistonPosition = 1.0
 currentStrokeType = 3
 
 [node name="Cylinder3" parent="Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18.5135, 39.7233)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.1065, 76)
 cylinderIndex = 2
 angleOffset = 540.0
-pistonPosition = -0.984673
+pistonPosition = -0.991197
 currentStrokeType = 2
 
 [node name="Cylinder2" parent="Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18.5135, 21.6317)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.1065, 44)
 cylinderIndex = 1
 angleOffset = 180.0
-pistonPosition = -0.984673
+pistonPosition = -0.991197
 
 [node name="Cylinder" parent="Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18.5135, 3.54)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.1065, 12)
 angleOffset = 360.0
 pistonPosition = 1.0
 currentStrokeType = 1

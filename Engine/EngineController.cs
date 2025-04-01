@@ -6,9 +6,11 @@ public partial class EngineController : Node
     [Export] public AirFlow airFlow;
     [Export] public Cylinder[] cylinders;
     [Export] private Crankshaft crankshaft;
+    [Export] public EngineHeatHandler heatHandler;
 
     public override void _Ready()
     {
+        heatHandler.engine = this;
         airFlow.engine = this;
         airFlow.crankshaft = crankshaft;
         foreach (Cylinder cylinder in cylinders)
@@ -16,7 +18,7 @@ public partial class EngineController : Node
             cylinder.engine = this;
             cylinder.airFlow = airFlow;
             cylinder.crankshaft = crankshaft;
-            cylinder.gasMasInsideCylinder = 10;
+            cylinder.gasMasInsideCylinder = 0;
             cylinder.Start();
         }
         base._Ready();
@@ -74,16 +76,20 @@ public partial class EngineController : Node
         //abs so engine doesn't run backwards
         float deltaAngle = Mathf.Abs(crankshaft.shaftAngleDeg - lastAngleDeg);
         lastAngleDeg = crankshaft.shaftAngleDeg;
+        float temperatureSum = 0;
         float torque = 0;
         foreach (Cylinder cylinder in cylinders)
         {
             cylinder.UpdateCurrentConditionsInsideCylinder(delta, deltaAngle, out float addTorque);
             torque += addTorque;
+            temperatureSum += cylinder.gasTemperatureInsideCylinder;
         }
         torque -= mechanicalDragModifier * delta * crankshaft.angularVelocityDeg;
 
+        heatHandler.HeatPhysics(delta);
 
         crankshaft.torques.Add(torque);
+        crankshaft.temperatures.Add(temperatureSum / (float)cylinders.Length);
         return torque;
     }
 }
