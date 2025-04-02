@@ -67,8 +67,9 @@ public partial class ChassisMain : Node
             gear++;
         if (Input.IsActionJustPressed("previousGear") && gear != 0)
             gear--;
-        if (Input.IsActionJustPressed("starter"))
+        if (Input.IsActionJustPressed("starter") && linearVelocity < starterSpeed + 10)
             crankshaft.visuals.starterButton.ButtonPressed = !crankshaft.visuals.starterButton.ButtonPressed;
+
         engine.throttle = Input.GetActionStrength("throttle");
         brakePosition = Input.GetActionStrength("breake");
 

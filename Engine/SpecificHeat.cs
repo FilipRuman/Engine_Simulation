@@ -8,24 +8,9 @@ public static class SpecificHeat
     // and that air is only N2 && O2 
     public static float GetCurrentSpecificHeat(Cylinder cylinder)
     {
-        switch (cylinder.CurrentStrokeType)
-        {
-
-            case Cylinder.StrokeType.Combustion:
-                return GetSpecificHeatOfExhaustFumes(cylinder.gasTemperatureInsideCylinder);
-            // the same thing but c# is fucked up so I can't use ||
-            case Cylinder.StrokeType.Exhaust:
-                return GetSpecificHeatOfExhaustFumes(cylinder.gasTemperatureInsideCylinder);
-
-
-            case Cylinder.StrokeType.Intake:
-                return GetSpecificHeatOfExhaustFumes(cylinder.gasTemperatureInsideCylinder);
-            // the same thing but c# is fucked up so I can't use ||
-            case Cylinder.StrokeType.Compression:
-                return GetSpecificHeatOfAir(cylinder.gasTemperatureInsideCylinder);
-        }
-
-        return 0; // this should never happen but c# throws error So...
+        float air = GetSpecificHeatOfAir(cylinder.gasTemperatureInsideCylinder) * (1 - cylinder.CurrentCombustionFumesAirRatio);
+        float exhaustFumes = GetSpecificHeatOfExhaustFumes(cylinder.gasTemperatureInsideCylinder) * cylinder.CurrentCombustionFumesAirRatio;
+        return air + exhaustFumes;
     }
 
     //  I'm using isochoric pressure

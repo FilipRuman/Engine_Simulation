@@ -24,26 +24,31 @@ public partial class AirFlow : Node
             return Mathf.Lerp(MinValveLift, MaxValveLift, engine.throttle);
     }
     // also i think it is the same as curtain area Ac
-    private float CurrentEffectiveFlowArea => Mathf.Pi * throttleDiameter * ValveLift();
+    private float CurrentEffectiveIntakeFlowArea => Mathf.Pi * throttleDiameter * ValveLift();
 
     // i don't think there is any way to calculate it
     [Export(PropertyHint.Range, "0.3,0.6,")] private float intakeVelocityModifier = .5f;
-
-    private float AverageIntakeVelocity => 2 * engine.strokeLength * crankshaft.RevolutionsPerSecond * intakeVelocityModifier;
+    public float AveragePistoneVelocity => 2 * engine.strokeLength * crankshaft.RevolutionsPerSecond;
 
 
     [Export(PropertyHint.Range, "0.4,0.8,")] private float flowEfficiency = .5f;
-    private float VolumetricFlowRate => CurrentEffectiveFlowArea * AverageIntakeVelocity * flowEfficiency;
-
-    public float CalculateMassFlowOfAir(float deltaTime)
+    private float VolumetricFlowRate(float flowArea)
     {
-        float gasDensity = Combustion.ambientAirDensity;
-        return gasDensity * VolumetricFlowRate * deltaTime;
+        return flowArea * AveragePistoneVelocity * flowEfficiency;
     }
 
-    // public float CalculateMassFlowOfGas(float specificGasConstant, float temperature, float deltaTime, float absoultePressure)
-    // {
-    //     float gasDensity = absoultePressure / (temperature * specificGasConstant);
-    //     return gasDensity * VolumetricFlowRate * deltaTime;
-    // }
+    public float CalculateMasOfAirIntake(float deltaTime)
+    {
+        float gasDensity = Combustion.ambientAirDensity;
+        return gasDensity * VolumetricFlowRate(CurrentEffectiveIntakeFlowArea) * intakeVelocityModifier * deltaTime;
+    }
+    [Export(PropertyHint.Range, "0.3,0.6,")] private float exhaustVelocityModifier = .5f;
+    [Export] private float exhaustAreaCm = .5f;
+    private float exhaustAreaM => exhaustAreaCm / 10000f;
+    public float CalculateMasOfExhaustGass(float deltaTime, Cylinder cylinder)
+    {
+        float gasDensity = cylinder.gasMasInsideCylinder / cylinder.CurrentGasVolume;
+        return gasDensity * VolumetricFlowRate(exhaustAreaM) * exhaustVelocityModifier * deltaTime;
+    }
+
 }

@@ -61,11 +61,12 @@ public class Combustion
         if (main.gasMasInsideCylinder == 0)
             return;
 
-        float fuelMassG = IdealOctaneBurnGramsFromAirGrams(main.gasMasInsideCylinder, out float oxygenG);
+        float fuelMassG = IdealOctaneBurnGramsFromAirGrams(Mathf.Min(1, main.gasMasInsideCylinder - main.combustionFumesMass), out float oxygenG);
         main.gasMasInsideCylinder += fuelMassG;
 
-        float gasMasChange = (burnMasChange - 1) * (fuelMassG + oxygenG);
-        main.gasMasInsideCylinder += gasMasChange;
+        main.gasMasInsideCylinder += (1 - burnMasChange) * (fuelMassG + oxygenG);
+        main.combustionFumesMass += burnMasChange * (fuelMassG + oxygenG);
+
         float specificHeat = SpecificHeat.GetCurrentSpecificHeat(main);
 
         float heatKJ = HeatFormOctaneCombustion * fuelMassG;

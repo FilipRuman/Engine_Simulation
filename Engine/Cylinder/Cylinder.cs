@@ -52,8 +52,9 @@ public partial class Cylinder : Node3D
     }
     private bool fuelIsBurned;
     private bool exhaustedGas;
-
-
+    private bool firstIntake = true;
+    ///For debugging purposes
+    public float combustionFumesRatioBeforeCombustion;
     public void UpdateCurrentConditionsInsideCylinder(float deltaTime, float deltaAngleDegrees, out float torque)
     {
         switch (CurrentStrokeType)
@@ -61,29 +62,35 @@ public partial class Cylinder : Node3D
             case StrokeType.Combustion:
                 if (!fuelIsBurned)
                 {
+
+                    firstIntake = true;
                     fuelIsBurned = true;
                     exhaustedGas = false;
+                    combustionFumesRatioBeforeCombustion = CurrentCombustionFumesAirRatio;
                     combustion.BurnCurrentAir();
                 }
                 break;
             case StrokeType.Exhaust:
                 if (!exhaustedGas)
                 {
-                    //TODO: Make this better
-                    exhaustedGas = true;
                     fuelIsBurned = false;
 
-                    gasTemperatureInsideCylinder = Combustion.ambientAirTemperature;
-                    gasMasInsideCylinder = 0;
+                    //Add exhaust fumes mas inside current gas mixture
+                    float massChange = airFlow.CalculateMasOfExhaustGass(deltaTime, this);
+                    combustionFumesMass -= CurrentCombustionFumesAirRatio * massChange;
+                    gasMasInsideCylinder = Mathf.Max(gasMasInsideCylinder - massChange, 0);
                 }
                 break;
             case StrokeType.Intake:
-                gasMasInsideCylinder += airFlow.CalculateMassFlowOfAir(deltaTime);
+                if (firstIntake == true)
+                    gasTemperatureInsideCylinder = ambientAirTemperature;
+                gasMasInsideCylinder += airFlow.CalculateMasOfAirIntake(deltaTime);
 
                 break;
             case StrokeType.Compression:
                 break;
         }
+        gasMasInsideCylinder = Mathf.Max(.1f, gasMasInsideCylinder);
         //https://en.wikipedia.org/wiki/First_law_of_thermodynamics
         ApplyFirstLawOfThremodynamics(out float work);
         if (deltaAngleDegrees == 0)
@@ -107,7 +114,7 @@ public partial class Cylinder : Node3D
         float volumeChange = currentVolume - lastVolume;
         work = averagePressure * volumeChange - (pressureChange * engine.pressureChangeFrictionModifier);
 
-        //TODO:
+        //TODO: make combustion happen in couple frames
         float heatFormCombustion = 0;
 
         float internalEnergyChange = heatFormCombustion - work;
@@ -118,7 +125,10 @@ public partial class Cylinder : Node3D
         lastPressure = currentPressure;
     }
 
-
+    public const float ambientAirTemperature = 20 + 273;
+    public float CurrentCombustionFumesAirRatio => gasMasInsideCylinder == 0 ? 1f : Mathf.Clamp(combustionFumesMass / gasMasInsideCylinder, 0f, 1f);
+    public float combustionFumesMass = 0;
+    /// mass of every gas that is inside cylinder including air, exhaust fumes
     public float gasMasInsideCylinder = 0;  // Kg
     public float gasTemperatureInsideCylinder = 10000; //Kelvins
 

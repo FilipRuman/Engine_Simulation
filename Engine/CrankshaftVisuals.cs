@@ -23,6 +23,7 @@ public partial class CrankshaftVisuals : Node
     [Export] Label totalTorque;
     [Export] Label averageGasTemperature;
 
+    [Export] Label exhaustFumesRatioBeforeCombustion;
     [Export] Label rpm;
     [Export] Label temperature;
     [Export] public CheckButton starterButton;
@@ -72,6 +73,8 @@ public partial class CrankshaftVisuals : Node
 
     private void UpdateTextUI()
     {
+        // i just use one of cylinders so i don't heave to do any weird averaging, ratios should be similar in all cylinders
+        exhaustFumesRatioBeforeCombustion.Text = $"exhaust fumes ratio in gas mixture before combustion {Math.Round(main.engine.cylinders[0].CurrentCombustionFumesAirRatio, 2)}";
         gameFps.Text = $"FPS {Engine.GetFramesPerSecond()}";
         rpm.Text = $"RPM: {Mathf.RoundToInt(main.RevolutionsPerSecond * 60f)}";
         throttleSlider.Value = engine.throttle;
