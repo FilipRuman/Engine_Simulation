@@ -41,12 +41,11 @@ public partial class EngineHeatHandler : Node
         foreach (Cylinder cylinder in engine.cylinders)
         {
             float convectiveHeatTransferCoefficient = CalculateConvectiveHeatTransferCoefficient(cylinder);
-            //For come reason cylinder.gasTemperatureInsideCylinder < cylinderWallTemperature
-            float convectionHeatFlux = convectiveHeatTransferCoefficient * (cylinderWallTemperature - cylinder.gasTemperatureInsideCylinder);
-            // GD.Print($"Heat handling {convectiveHeatTransferCoefficient} {convectionHeatFlux}");
+            float convectionHeatFlux = convectiveHeatTransferCoefficient * (cylinder.gasTemperatureInsideCylinder - cylinderWallTemperature);
 
-            float radiationHeatFlux = emissivityOfTheGas * StefanBoltzmannConstant * (Mathf.Pow(cylinder.gasTemperatureInsideCylinder, 4) - Mathf.Pow(cylinderWallTemperature, 4));
-            float heatFluxIn = convectionHeatFlux + radiationHeatFlux;
+            // this shouldn't really change anything
+            // float radiationHeatFlux = emissivityOfTheGas * StefanBoltzmannConstant * (Mathf.Pow(cylinder.gasTemperatureInsideCylinder, 4) - Mathf.Pow(cylinderWallTemperature, 4));
+            float heatFluxIn = convectionHeatFlux /* + radiationHeatFlux */;
 
             float deltaTemp = (cylinderWallTemperature - coolantTempK);
             float heatFluxOut = deltaTemp == 0 ? 0 : castIronThermalConductivity / cylinderWallThickness * deltaTemp;
@@ -56,7 +55,7 @@ public partial class EngineHeatHandler : Node
             float transferredHeat = heatFluxIn * currentHeatingArea * heatingAreaModifier - heatFluxOut * cylinderWallAreaOut * coolingAreaModifier;
 
             cylinderWallTemperature += (delta * transferredHeat) / (massOfCylinderWalls * castIronSpecificHeatCapacity);
-            //
+            // could be working if I add a better fuel burning model
             // if (cylinder.gasMasInsideCylinder != 0)
             // {
             //     float specificHeat = SpecificHeat.GetCurrentSpecificHeat(cylinder);
@@ -82,9 +81,10 @@ public partial class EngineHeatHandler : Node
     {
         //Woschni correlation
         float bore = 130 * Mathf.Pow(engine.bore, -.2f);
-        float pressure = Mathf.Pow(cylinder.currentPressure / 1000f /* from Pa to kPa */ , 0.8f);
-        float temperature = Mathf.Pow(cylinder.gasTemperatureInsideCylinder, -.53f);
         float velocity = Mathf.Pow(CalculateCylinderGasVelocity(cylinder), .8f);
+
+        float temperature = Mathf.Pow(cylinder.gasTemperatureInsideCylinder, -.53f) /* rylinder.gasTemperatureInsideCylinder */;
+        float pressure = Mathf.Pow(cylinder.currentPressure / 1000f /* from Pa to kPa */ , 0.8f);
         return bore * pressure * temperature * velocity; //W/m^2K
     }
 }
