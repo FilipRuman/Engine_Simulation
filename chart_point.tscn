@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://jk53mwq3nqag"]
 
-[ext_resource type="Texture2D" uid="uid://cawxdqhic45fl" path="res://circle.png" id="1_7eqyp"]
+[ext_resource type="Texture2D" uid="uid://cawxdqhic45fl" path="res://sprites/circle.png" id="1_7eqyp"]
 
 [node name="chart point" type="TextureRect"]
 anchors_preset = 2

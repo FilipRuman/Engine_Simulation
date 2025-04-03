@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cawxdqhic45fl"
-path="res://.godot/imported/circle.png-10953cad44a8947fbdd4128a631e9e52.ctex"
+uid="uid://6lfm0bl5mg1v"
+path="res://.godot/imported/gaugeArrow.png-2b505c7463a71ff3633f87fdbd6edf5f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://circle.png"
-dest_files=["res://.godot/imported/circle.png-10953cad44a8947fbdd4128a631e9e52.ctex"]
+source_file="res://sprites/gaugeArrow.png"
+dest_files=["res://.godot/imported/gaugeArrow.png-2b505c7463a71ff3633f87fdbd6edf5f.ctex"]
 
 [params]
 
