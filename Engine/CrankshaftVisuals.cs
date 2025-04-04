@@ -74,19 +74,19 @@ public partial class CrankshaftVisuals : Node
     private void UpdateTextUI()
     {
         // i just use one of cylinders so i don't heave to do any weird averaging, ratios should be similar in all cylinders
-        exhaustFumesRatioBeforeCombustion.Text = $"exhaust fumes ratio in gas mixture before combustion {Math.Round(main.engine.cylinders[0].CurrentCombustionFumesAirRatio, 2)}";
+        exhaustFumesRatioBeforeCombustion.Text = $"Exhaust fumes ratio in gas mixture before combustion {Math.Round(main.engine.cylinders[0].CurrentCombustionFumesAirRatio, 2)}";
         gameFps.Text = $"FPS {Engine.GetFramesPerSecond()}";
         rpm.Text = $"RPM: {Mathf.RoundToInt(main.RevolutionsPerSecond * 60f)}";
         throttleSlider.Value = engine.throttle;
-        temperature.Text = $"Temperature: {Mathf.RoundToInt(engine.heatHandler.cylinderWallTemperature - 273)}C";
+        temperature.Text = $"Temperature of 1'st cylinder's wall: {Mathf.RoundToInt(engine.heatHandler.cylinderWallTemperature - 273)}C";
 
         angularVelocityText.Text = $"Angular velocity: {Mathf.RoundToInt(main.angularVelocityDeg)}";
 
         soundController.throttle = engine.overRPM ? 0 : engine.throttle;
         soundController.rpm = main.RevolutionsPerSecond * 60f;
 
-        totalTorque.Text = $"torque: {(int)averageTorque}";
-        averageGasTemperature.Text = $"average gas temperature: {(int)engine.cylinders[0].gasTemperatureInsideCylinder}";
+        totalTorque.Text = $"Torque: {(int)averageTorque}";
+        averageGasTemperature.Text = $"Average gas temperature: {(int)engine.cylinders[0].gasTemperatureInsideCylinder}";
 
     }
     private void UpdateCrankShaftAndPinsMeshes()
