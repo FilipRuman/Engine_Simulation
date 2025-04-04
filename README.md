@@ -1,4 +1,4 @@
-# Engine_Simulation
-Add pistone connection to crankshaft
-Add temp simulation
-Add break sound - wind  *opt
+# Resources cheap, highly configurable, realistc ish engine simulator
+ I made it mainly for propeller plane of my [flight sim]()
+
+
