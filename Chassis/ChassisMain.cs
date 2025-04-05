@@ -61,18 +61,30 @@ public partial class ChassisMain : Node
 
         base._Process(delta);
     }
+    [Export] string nextGearActionName = "nextGear";
+    [Export] string previousGearActionName = "previousGear";
+    [Export] string starterActionName = "starter";
+
+    [Export] string throttleActionName = "throttle";
+    [Export] string breakeActionName = "breake";
     private void HandleInput()
     {
-        if (Input.IsActionJustPressed("nextGear") && gear != gearRatios.Length - 1)
+
+        if (nextGearActionName != "" && Input.IsActionJustPressed(nextGearActionName) && gear != gearRatios.Length - 1)
             gear++;
-        if (Input.IsActionJustPressed("previousGear") && gear != 0)
+        if (previousGearActionName != "" && Input.IsActionJustPressed(previousGearActionName) && gear != 0)
             gear--;
-        if (Input.IsActionJustPressed("starter") && linearVelocity < starterSpeed + 10)
+        if (starterActionName != "" && Input.IsActionJustPressed(starterActionName) && linearVelocity < starterSpeed + 10)
             crankshaft.visuals.starterButton.ButtonPressed = !crankshaft.visuals.starterButton.ButtonPressed;
 
-        engine.throttle = Input.GetActionStrength("throttle");
-        brakePosition = Input.GetActionStrength("breake");
+        if (throttleActionName != "")
+            engine.throttle = Input.GetActionStrength(throttleActionName);
+
+        if (breakeActionName != "")
+            brakePosition = Input.GetActionStrength(breakeActionName);
 
     }
+
+
 
 }

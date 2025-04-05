@@ -36,8 +36,8 @@ rpmLimit = 13000.0
 mechanicalDragModifier = 4.5
 pressureChangeFrictionModifier = 0.0
 boreDm = 0.705
-displacementDm3 = 0.494648
-strokeLengthDm = 1.15715
+displacementDm3 = 0.494641
+strokeLengthDm = 1.15713
 additionalUpwardHeightDm = 0.11
 pistonHeightCm = 3.0
 visualsScale = 74.54
@@ -206,14 +206,14 @@ currentStrokeType = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.0503, 76)
 cylinderIndex = 2
 angleOffset = 540.0
-pistonPosition = -0.992822
+pistonPosition = -0.992854
 currentStrokeType = 2
 
 [node name="Cylinder2" parent="Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.0503, 44)
 cylinderIndex = 1
 angleOffset = 180.0
-pistonPosition = -0.992822
+pistonPosition = -0.992854
 
 [node name="Cylinder" parent="Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.0503, 12)
