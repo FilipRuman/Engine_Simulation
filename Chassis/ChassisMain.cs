@@ -4,23 +4,18 @@ public partial class ChassisMain : Node
     [Export] Crankshaft crankshaft;
     [Export] EngineController engine;
     [Export] private float mass; // kg
-    [Export] private float linearVelocity; // km/h
+    [Export] public float linearVelocity; // km/h
     [Export] private float breakeTorque;
     public float brakePosition;
 
     public int gear;
-    [Export] float[] gearRatios;
-    [Export] float whealRadious;
-    [Export] float dragModifeir;
+    [Export] private float[] gearRatios;
+    [Export] private float whealRadious;
+    [Export] private float dragModifier;
     [Export] private float starterSpeed;
     [Export] Curve dragBasedOnVelocity;
 
-    [ExportGroup("Ui")]
-
-    [Export] Label gearText;
-    [Export] Label linearVelocityText;
-    [Export] Label dragText;
-
+    public float currentDragForce;
     const float msToKm = 3.6f;
     public override void _PhysicsProcess(double delta)
     {
@@ -34,9 +29,11 @@ public partial class ChassisMain : Node
         float forceAtTheWheals = (engineTorque * currentGearRatio) / whealRadious;
         const int drivenWheals = 4;
         float totalEngineForce = forceAtTheWheals * (float)drivenWheals;
-        float dragForce = dragBasedOnVelocity.SampleBaked(linearVelocity) * dragModifeir;
+
+        currentDragForce = dragBasedOnVelocity.SampleBaked(linearVelocity) * dragModifier;
+
         float breakeForce = breakeTorque * brakePosition;
-        float netForce = totalEngineForce - breakeForce - dragForce;
+        float netForce = totalEngineForce - breakeForce - currentDragForce;
         float acceleration = netForce / mass;
         //TODO: change that to keybinding
 
@@ -55,9 +52,6 @@ public partial class ChassisMain : Node
     public override void _Process(double delta)
     {
         HandleInput();
-        gearText.Text = $"gear: {gear}";
-        linearVelocityText.Text = $"velocity: {Mathf.RoundToInt(linearVelocity)}";
-        dragText.Text = $"drag force: {Mathf.RoundToInt(dragBasedOnVelocity.SampleBaked(linearVelocity) * dragModifeir)}";
 
         base._Process(delta);
     }
@@ -66,7 +60,7 @@ public partial class ChassisMain : Node
     [Export] string starterActionName = "starter";
 
     [Export] string throttleActionName = "throttle";
-    [Export] string breakeActionName = "breake";
+    [Export] string brakeActionName = "breake";
     private void HandleInput()
     {
 
@@ -80,8 +74,8 @@ public partial class ChassisMain : Node
         if (throttleActionName != "")
             engine.throttle = Input.GetActionStrength(throttleActionName);
 
-        if (breakeActionName != "")
-            brakePosition = Input.GetActionStrength(breakeActionName);
+        if (brakeActionName != "")
+            brakePosition = Input.GetActionStrength(brakeActionName);
 
     }
 
