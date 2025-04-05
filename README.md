@@ -1,4 +1,5 @@
 # Performant, highly configurable, semi-realistic engine simulator made in Godot
+##  [Video](https://www.youtube.com/watch?v=1RHQCW3a_Tw)
 Made mainly for propeller plane in my [flight sim](https://github.com/LeaveMyAlpaca/Flight-sim)
 ## Main features:
 
