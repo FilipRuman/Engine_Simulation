@@ -58,6 +58,8 @@ public partial class EngineController : Node
     public float displacement; //m^3
     public float pistonHeight => pistonHeightCm / 100f;
 
+    public float currentPower; // Watts
+    public float currentHorsePower => currentPower / 745.7f;
 
     public bool overRPM = false;
     private void CalculateDisplacement()
@@ -87,6 +89,8 @@ public partial class EngineController : Node
         torque -= mechanicalDragModifier * delta * crankshaft.angularVelocityDeg;
 
         heatHandler.HeatPhysics(delta);
+        currentPower = torque * crankshaft.RevolutionsPerSecond * 2 * Mathf.Pi;
+
 
         crankshaft.torques.Add(torque);
         crankshaft.temperatures.Add(temperatureSum / (float)cylinders.Length);

@@ -25,6 +25,7 @@ public partial class CrankshaftVisuals : Node
 
     [Export] Label exhaustFumesRatioBeforeCombustion;
     [Export] Label rpm;
+    [Export] Label horsePower;
     [Export] Label temperature;
     [Export] public CheckButton starterButton;
     [Export] Label gameFps;
@@ -77,6 +78,7 @@ public partial class CrankshaftVisuals : Node
         exhaustFumesRatioBeforeCombustion.Text = $"Exhaust fumes ratio in gas mixture before combustion {Math.Round(main.engine.cylinders[0].CurrentCombustionFumesAirRatio, 2)}";
         gameFps.Text = $"FPS {Engine.GetFramesPerSecond()}";
         rpm.Text = $"RPM: {Mathf.RoundToInt(main.RevolutionsPerSecond * 60f)}";
+        horsePower.Text = $"Horse power: {Mathf.RoundToInt(main.engine.currentHorsePower)}";
         throttleSlider.Value = engine.throttle;
         temperature.Text = $"Temperature of 1'st cylinder's wall: {Mathf.RoundToInt(engine.heatHandler.cylinderWallTemperature - 273)}C";
 

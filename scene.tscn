@@ -72,7 +72,7 @@ rodLengthCm = 1605.07
 crankPinLengthCm = 11.53
 averageSmoothingFrames = 800
 
-[node name="visuals" type="Node" parent="Engine controller/crankShaft" node_paths=PackedStringArray("chankshaftMesh", "crankPinSpawnPoint", "soundController", "throttleSlider", "angularVelocityText", "totalTorque", "averageGasTemperature", "exhaustFumesRatioBeforeCombustion", "rpm", "temperature", "starterButton", "gameFps")]
+[node name="visuals" type="Node" parent="Engine controller/crankShaft" node_paths=PackedStringArray("chankshaftMesh", "crankPinSpawnPoint", "soundController", "throttleSlider", "angularVelocityText", "totalTorque", "averageGasTemperature", "exhaustFumesRatioBeforeCombustion", "rpm", "horsePower", "temperature", "starterButton", "gameFps")]
 script = ExtResource("4_73fnb")
 chankshaftMesh = NodePath("../crankShaftMesh")
 crankPinSpawnPoint = NodePath("../crankPinSpawnPoint")
@@ -86,6 +86,7 @@ totalTorque = NodePath("torque")
 averageGasTemperature = NodePath("gas temperature")
 exhaustFumesRatioBeforeCombustion = NodePath("exhaust fumes")
 rpm = NodePath("rpm")
+horsePower = NodePath("horse power")
 temperature = NodePath("temperature")
 starterButton = NodePath("starter")
 gameFps = NodePath("fps")
@@ -108,7 +109,7 @@ offset_left = -71.0
 offset_right = 71.0
 offset_bottom = 23.0
 grow_horizontal = 2
-text = "FPS 144"
+text = "FPS 145"
 horizontal_alignment = 1
 
 [node name="angular velocity" type="Label" parent="Engine controller/crankShaft/visuals"]
@@ -132,6 +133,17 @@ offset_right = 250.0
 offset_bottom = -73.0
 grow_vertical = 0
 text = "Torque: -2147483648"
+
+[node name="horse power" type="Label" parent="Engine controller/crankShaft/visuals"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 39.0
+offset_top = -113.0
+offset_right = 249.0
+offset_bottom = -90.0
+grow_vertical = 0
+text = "Horse power: 0"
 
 [node name="rpm" type="Label" parent="Engine controller/crankShaft/visuals"]
 anchors_preset = 2
