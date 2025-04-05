@@ -30,14 +30,20 @@ public partial class Crankshaft : Node3D
         shaftAngleDeg += angularVelocityDeg * delta;
     }
 
+    [Export] bool statisticsSomething = true;
     public override void _Process(double delta)
     {
-        HandleStatisticsSmoothing();
+        if (statisticsSomething)
+            HandleStatisticsSmoothing();
 
         base._Process(delta);
     }
     public override void _Ready()
     {
+
+        if (visuals == null)
+            return;
+
         visuals.main = this;
         visuals.engine = engine;
         visuals.SpawnCrankPins();

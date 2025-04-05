@@ -46,7 +46,8 @@ public partial class Cylinder : Node3D
         }
         pistonPosition = (crankshaft.GetPistonPositionAtAngle(CurrentAngleDegrees) - Position.Y) / engine.strokeLength;
 
-        visuals.UpdateMeshes();
+        if (visuals != null)
+            visuals.UpdateMeshes();
 
         base._Process(delta);
     }
@@ -138,7 +139,11 @@ public partial class Cylinder : Node3D
 
     public void Start()
     {
+
         combustion.main = this;
+
+        if (visuals == null)
+            return;
         visuals.engine = engine;
         visuals.main = this;
         visuals.UpdateMeshes();
