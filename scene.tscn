@@ -81,15 +81,69 @@ soundController = NodePath("../../../Scene/Engine controller")
 crankshaftLength = 120.0
 cylindersPadding = 12.0
 throttleSlider = NodePath("throttle")
-angularVelocityText = NodePath("angular velocity")
-totalTorque = NodePath("torque")
-averageGasTemperature = NodePath("gas temperature")
-exhaustFumesRatioBeforeCombustion = NodePath("exhaust fumes")
-rpm = NodePath("rpm")
-horsePower = NodePath("horse power")
-temperature = NodePath("temperature")
-starterButton = NodePath("starter")
+angularVelocityText = NodePath("VBoxContainer/angular velocity")
+totalTorque = NodePath("VBoxContainer/torque")
+averageGasTemperature = NodePath("VBoxContainer/gas temperature")
+exhaustFumesRatioBeforeCombustion = NodePath("VBoxContainer/exhaust fumes")
+rpm = NodePath("VBoxContainer/rpm")
+horsePower = NodePath("VBoxContainer/horse power")
+temperature = NodePath("VBoxContainer/temperature")
+starterButton = NodePath("VBoxContainer/starter")
 gameFps = NodePath("fps")
+
+[node name="fps" type="Label" parent="Engine controller/crankShaft/visuals"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -217.0
+offset_right = 217.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "FPS 144"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Engine controller/crankShaft/visuals"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 14.0
+offset_top = -222.0
+offset_right = 448.0
+offset_bottom = -2.0
+grow_vertical = 0
+
+[node name="angular velocity" type="Label" parent="Engine controller/crankShaft/visuals/VBoxContainer"]
+layout_mode = 2
+text = "Angular velocity: 1000"
+
+[node name="torque" type="Label" parent="Engine controller/crankShaft/visuals/VBoxContainer"]
+layout_mode = 2
+text = "Torque: -2147483648"
+
+[node name="horse power" type="Label" parent="Engine controller/crankShaft/visuals/VBoxContainer"]
+layout_mode = 2
+text = "Horse power: 0"
+
+[node name="rpm" type="Label" parent="Engine controller/crankShaft/visuals/VBoxContainer"]
+layout_mode = 2
+text = "RPM: 167"
+
+[node name="temperature" type="Label" parent="Engine controller/crankShaft/visuals/VBoxContainer"]
+layout_mode = 2
+text = "Temperature of 1'st cylinder's wall: 30C"
+
+[node name="exhaust fumes" type="Label" parent="Engine controller/crankShaft/visuals/VBoxContainer"]
+layout_mode = 2
+text = "Exhaust fumes ratio in gas mixture before combustion 1"
+
+[node name="gas temperature" type="Label" parent="Engine controller/crankShaft/visuals/VBoxContainer"]
+layout_mode = 2
+text = "Average gas temperature: 10000"
+
+[node name="starter" type="CheckButton" parent="Engine controller/crankShaft/visuals/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Starter"
 
 [node name="throttle" type="VSlider" parent="Engine controller/crankShaft/visuals"]
 anchors_preset = 2
@@ -100,105 +154,6 @@ offset_right = 16.0
 grow_vertical = 0
 max_value = 1.0
 step = 0.0
-
-[node name="fps" type="Label" parent="Engine controller/crankShaft/visuals"]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -71.0
-offset_right = 71.0
-offset_bottom = 23.0
-grow_horizontal = 2
-text = "FPS 145"
-horizontal_alignment = 1
-
-[node name="angular velocity" type="Label" parent="Engine controller/crankShaft/visuals"]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 40.0
-offset_top = -49.0
-offset_right = 210.0
-offset_bottom = -26.0
-grow_vertical = 0
-text = "Angular velocity: 1000"
-
-[node name="torque" type="Label" parent="Engine controller/crankShaft/visuals"]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 40.0
-offset_top = -96.0
-offset_right = 250.0
-offset_bottom = -73.0
-grow_vertical = 0
-text = "Torque: -2147483648"
-
-[node name="horse power" type="Label" parent="Engine controller/crankShaft/visuals"]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 39.0
-offset_top = -113.0
-offset_right = 249.0
-offset_bottom = -90.0
-grow_vertical = 0
-text = "Horse power: 0"
-
-[node name="rpm" type="Label" parent="Engine controller/crankShaft/visuals"]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 38.0
-offset_top = -131.0
-offset_right = 180.0
-offset_bottom = -108.0
-grow_vertical = 0
-text = "RPM: 167"
-
-[node name="temperature" type="Label" parent="Engine controller/crankShaft/visuals"]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 37.0
-offset_top = -219.0
-offset_right = 179.0
-offset_bottom = -196.0
-grow_vertical = 0
-text = "Temperature of 1'st cylinder's wall: 30C"
-
-[node name="exhaust fumes" type="Label" parent="Engine controller/crankShaft/visuals"]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 35.0
-offset_top = -239.0
-offset_right = 177.0
-offset_bottom = -216.0
-grow_vertical = 0
-text = "Exhaust fumes ratio in gas mixture before combustion 1"
-
-[node name="gas temperature" type="Label" parent="Engine controller/crankShaft/visuals"]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 42.0
-offset_top = -71.0
-offset_right = 184.0
-offset_bottom = -48.0
-grow_vertical = 0
-text = "Average gas temperature: 10000"
-
-[node name="starter" type="CheckButton" parent="Engine controller/crankShaft/visuals"]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 28.0
-offset_top = -187.0
-offset_right = 130.0
-offset_bottom = -156.0
-grow_vertical = 0
-text = "Starter"
 
 [node name="crankPinSpawnPoint" type="Node3D" parent="Engine controller/crankShaft"]
 transform = Transform3D(0.999999, -1.74845e-07, 0, 1.74845e-07, 0.999999, 0, 0, 0, 1, 0, 0, 0)
@@ -248,48 +203,33 @@ dragBasedOnVelocity = SubResource("Curve_5juve")
 [node name="ChassisVisuals" type="Node" parent="Engine controller/chassis" node_paths=PackedStringArray("main", "gearText", "linearVelocityText", "dragText")]
 script = ExtResource("9_fy5k1")
 main = NodePath("..")
-gearText = NodePath("gear")
-linearVelocityText = NodePath("velocity")
-dragText = NodePath("drag force")
+gearText = NodePath("VBoxContainer/gear")
+linearVelocityText = NodePath("VBoxContainer/velocity")
+dragText = NodePath("VBoxContainer/drag force")
 
-[node name="gear" type="Label" parent="Engine controller/chassis/ChassisVisuals"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Engine controller/chassis/ChassisVisuals"]
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -148.0
-offset_top = -23.0
+offset_left = -174.0
+offset_top = -77.0
 grow_horizontal = 0
 grow_vertical = 0
+
+[node name="gear" type="Label" parent="Engine controller/chassis/ChassisVisuals/VBoxContainer"]
+layout_mode = 2
 text = "gear:"
 vertical_alignment = 1
 
-[node name="velocity" type="Label" parent="Engine controller/chassis/ChassisVisuals"]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -148.0
-offset_top = -41.0
-offset_bottom = -18.0
-grow_horizontal = 0
-grow_vertical = 0
+[node name="velocity" type="Label" parent="Engine controller/chassis/ChassisVisuals/VBoxContainer"]
+layout_mode = 2
 text = "velocity:"
 vertical_alignment = 1
 
-[node name="drag force" type="Label" parent="Engine controller/chassis/ChassisVisuals"]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -148.0
-offset_top = -59.0
-offset_bottom = -36.0
-grow_horizontal = 0
-grow_vertical = 0
+[node name="drag force" type="Label" parent="Engine controller/chassis/ChassisVisuals/VBoxContainer"]
+layout_mode = 2
 text = "drag force:"
 vertical_alignment = 1
 
