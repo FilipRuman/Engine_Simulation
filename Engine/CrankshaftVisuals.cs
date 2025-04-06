@@ -78,7 +78,6 @@ public partial class CrankshaftVisuals : Node
         exhaustFumesRatioBeforeCombustion.Text = $"Exhaust fumes ratio in gas mixture before combustion {Math.Round(main.engine.cylinders[0].CurrentCombustionFumesAirRatio, 2)}";
         gameFps.Text = $"FPS {Engine.GetFramesPerSecond()}";
         rpm.Text = $"RPM: {Mathf.RoundToInt(main.RevolutionsPerSecond * 60f)}";
-        horsePower.Text = $"Horse power: {Mathf.RoundToInt(main.engine.currentHorsePower)}";
         throttleSlider.Value = engine.throttle;
         temperature.Text = $"Temperature of 1'st cylinder's wall: {Mathf.RoundToInt(engine.heatHandler.cylinderWallTemperature - 273)}C";
 
@@ -87,6 +86,7 @@ public partial class CrankshaftVisuals : Node
         soundController.throttle = engine.overRPM ? 0 : engine.throttle;
         soundController.rpm = main.RevolutionsPerSecond * 60f;
 
+        horsePower.Text = $"Horse power: {(int)main.engine.currentHorsePower}";
         totalTorque.Text = $"Torque: {(int)averageTorque}";
         averageGasTemperature.Text = $"Average gas temperature: {(int)engine.cylinders[0].gasTemperatureInsideCylinder}";
 
