@@ -1,8 +1,8 @@
 using System;
 using Godot;
 
-public class Combustion
-{
+public class Combustion {
+
     public Cylinder main;
 
     //let's say that the gasoline is C8H18 - Octane  https://en.wikipedia.org/wiki/Octane
@@ -27,8 +27,7 @@ public class Combustion
     // I think that mass shouldn't change inside chemic reaction SOOOOOOOOOOO...... https://en.wikipedia.org/wiki/Conservation_of_mass
     private const float burnMasChange = 1.2795830659f;
 
-    private static float IdealOctaneBurnGramsFromAirGrams(float airG, out float oxygenG)
-    {
+    private static float IdealOctaneBurnGramsFromAirGrams(float airG, out float oxygenG) {
         oxygenG = airG * AirOxygenRatio;
         return oxygenG * OxygenFuelRatio;
     }
@@ -56,8 +55,7 @@ public class Combustion
     /// calculates how much fuel you can burn using IdealOctaneBurnGramsFromAirGrams()
     ///  then calculates how temperature && mas will change and applies it
     /// </summary>
-    public void BurnCurrentAir()
-    {
+    public void BurnCurrentAir() {
         if (main.gasMasInsideCylinder == 0)
             return;
 

@@ -1,20 +1,18 @@
 using System;
 using Godot;
 [Tool]
-public partial class EngineController : Node
-{
+public partial class EngineController : Node {
+
     [Export] public AirFlow airFlow;
     [Export] public Cylinder[] cylinders;
     [Export] private Crankshaft crankshaft;
     [Export] public EngineHeatHandler heatHandler;
 
-    public override void _Ready()
-    {
+    public override void _Ready() {
         heatHandler.engine = this;
         airFlow.engine = this;
         airFlow.crankshaft = crankshaft;
-        foreach (Cylinder cylinder in cylinders)
-        {
+        foreach (Cylinder cylinder in cylinders) {
             cylinder.engine = this;
             cylinder.airFlow = airFlow;
             cylinder.crankshaft = crankshaft;
@@ -23,10 +21,8 @@ public partial class EngineController : Node
         }
         base._Ready();
     }
-    public override void _Process(double delta)
-    {
-        if (Engine.IsEditorHint() || strokeLength == 0)
-        {
+    public override void _Process(double delta) {
+        if (Engine.IsEditorHint() || strokeLength == 0) {
             strokeLength = crankshaft.GetStroke();
             strokeLengthDm = strokeLength * 10f;
             CalculateDisplacement();
@@ -62,8 +58,7 @@ public partial class EngineController : Node
     public float currentHorsePower => currentPower / 745.7f;
 
     public bool overRPM = false;
-    private void CalculateDisplacement()
-    {
+    private void CalculateDisplacement() {
         var radius = bore / 2f;
         displacement = Mathf.Pi * radius * radius * (strokeLength + additionalUpwardHeight);
         displacementDm3 = displacement * 1000f;
@@ -71,8 +66,7 @@ public partial class EngineController : Node
     /// m^3
 
     float lastAngleDeg = 0;
-    public float HandlePhysicsAndCalculateTorque(float delta)
-    {
+    public float HandlePhysicsAndCalculateTorque(float delta) {
         overRPM = crankshaft.RevolutionsPerSecond * 60f > rpmLimit;
 
         //abs so engine doesn't run backwards
@@ -80,8 +74,7 @@ public partial class EngineController : Node
         lastAngleDeg = crankshaft.shaftAngleDeg;
         float temperatureSum = 0;
         float torque = 0;
-        foreach (Cylinder cylinder in cylinders)
-        {
+        foreach (Cylinder cylinder in cylinders) {
             cylinder.UpdateCurrentConditionsInsideCylinder(delta, deltaAngle, out float addTorque);
             torque += addTorque;
             temperatureSum += cylinder.gasTemperatureInsideCylinder;

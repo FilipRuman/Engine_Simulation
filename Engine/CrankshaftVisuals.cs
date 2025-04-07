@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using Godot;
 [Tool]
-public partial class CrankshaftVisuals : Node
-{
+public partial class CrankshaftVisuals : Node {
+
 
     public Crankshaft main;
     public EngineController engine;
@@ -33,8 +33,7 @@ public partial class CrankshaftVisuals : Node
 
     public float averageTemperature;
     public float averageTorque;
-    public override void _Process(double delta)
-    {
+    public override void _Process(double delta) {
         if (Engine.IsEditorHint())
             SpawnCrankPins();
 
@@ -44,16 +43,13 @@ public partial class CrankshaftVisuals : Node
         base._Process(delta);
     }
 
-    public void SpawnCrankPins()
-    {
+    public void SpawnCrankPins() {
         crankPinSpawnPoint.RotationDegrees = new(0, 0, 0);
-        foreach (Node3D node in crankPinSpawnPoint.GetChildren())
-        {
+        foreach (Node3D node in crankPinSpawnPoint.GetChildren()) {
             node.QueueFree();
         }
 
-        foreach (Cylinder cylinder in engine.cylinders)
-        {
+        foreach (Cylinder cylinder in engine.cylinders) {
 
             var node = crankPinPrefab.Instantiate(PackedScene.GenEditState.Instance);
             crankPinSpawnPoint.AddChild(node);
@@ -66,14 +62,12 @@ public partial class CrankshaftVisuals : Node
 
     }
 
-    public Vector3 GetRelativeCylinderPlacement(uint cylinderIndex)
-    {
+    public Vector3 GetRelativeCylinderPlacement(uint cylinderIndex) {
         var lengthPerCylinder = (crankshaftLength - cylindersPadding * 2) / (float)(engine.cylinders.Length - 1);
         return new(0, main.GetBottomDeadCentreHeight(), lengthPerCylinder * cylinderIndex + cylindersPadding);
     }
 
-    private void UpdateTextUI()
-    {
+    private void UpdateTextUI() {
         // i just use one of cylinders so i don't heave to do any weird averaging, ratios should be similar in all cylinders
         exhaustFumesRatioBeforeCombustion.Text = $"Exhaust fumes ratio in gas mixture before combustion {Math.Round(main.engine.cylinders[0].CurrentCombustionFumesAirRatio, 2)}";
         gameFps.Text = $"FPS {Engine.GetFramesPerSecond()}";
@@ -91,8 +85,7 @@ public partial class CrankshaftVisuals : Node
         averageGasTemperature.Text = $"Average gas temperature: {(int)engine.cylinders[0].gasTemperatureInsideCylinder}";
 
     }
-    private void UpdateCrankShaftAndPinsMeshes()
-    {
+    private void UpdateCrankShaftAndPinsMeshes() {
         chankshaftMesh.Scale = new(1, crankshaftLength, 1);
         chankshaftMesh.RotationDegrees = new(90, main.shaftAngleDeg, 0);
         crankPinSpawnPoint.RotationDegrees = new(0, 0, main.shaftAngleDeg);

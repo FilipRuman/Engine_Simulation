@@ -1,6 +1,6 @@
 using Godot;
-public partial class ChassisMain : Node
-{
+public partial class ChassisMain : Node {
+
     [Export] Crankshaft crankshaft;
     [Export] EngineController engine;
     [Export] private float mass; // kg
@@ -17,8 +17,7 @@ public partial class ChassisMain : Node
 
     public float currentDragForce;
     const float msToKm = 3.6f;
-    public override void _PhysicsProcess(double delta)
-    {
+    public override void _PhysicsProcess(double delta) {
         if (Engine.IsEditorHint())
             return;
 
@@ -41,16 +40,14 @@ public partial class ChassisMain : Node
         linearVelocity += (acceleration * (float)delta) * msToKm;
 
         linearVelocity = Mathf.Max(0, linearVelocity);
-        if (crankshaft.visuals.starterButton.ButtonPressed)
-        {
+        if (crankshaft.visuals.starterButton.ButtonPressed) {
             linearVelocity = starterSpeed;
         }
         crankshaft.UpdateCrankshaftStatsBasedOnDrivetrain(linearVelocity, whealRadious, currentGearRatio, (float)delta);
 
         base._PhysicsProcess(delta);
     }
-    public override void _Process(double delta)
-    {
+    public override void _Process(double delta) {
         HandleInput();
 
         base._Process(delta);
@@ -61,8 +58,7 @@ public partial class ChassisMain : Node
 
     [Export] string throttleActionName = "throttle";
     [Export] string brakeActionName = "breake";
-    private void HandleInput()
-    {
+    private void HandleInput() {
 
         if (nextGearActionName != "" && Input.IsActionJustPressed(nextGearActionName) && gear != gearRatios.Length - 1)
             gear++;

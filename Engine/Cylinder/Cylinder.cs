@@ -1,9 +1,8 @@
 using Godot;
 [Tool, GlobalClass]
-public partial class Cylinder : Node3D
-{
-    public enum StrokeType
-    {
+public partial class Cylinder : Node3D {
+
+    public enum StrokeType {
         Exhaust,
         Intake,
         Compression,
@@ -31,16 +30,13 @@ public partial class Cylinder : Node3D
 
 
 
-    public override void _Process(double delta)
-    {
-        if (crankshaft == null)
-        {
+    public override void _Process(double delta) {
+        if (crankshaft == null) {
             GD.Print("cramlshaft == null");
             return;
         }
 
-        if (Engine.IsEditorHint())
-        {
+        if (Engine.IsEditorHint()) {
             Position = crankshaft.visuals.GetRelativeCylinderPlacement(cylinderIndex);
             currentStrokeType = CurrentStrokeType;
         }
@@ -56,13 +52,10 @@ public partial class Cylinder : Node3D
     private bool firstIntake = true;
     ///For debugging purposes
     public float combustionFumesRatioBeforeCombustion;
-    public void UpdateCurrentConditionsInsideCylinder(float deltaTime, float deltaAngleDegrees, out float torque)
-    {
-        switch (CurrentStrokeType)
-        {
+    public void UpdateCurrentConditionsInsideCylinder(float deltaTime, float deltaAngleDegrees, out float torque) {
+        switch (CurrentStrokeType) {
             case StrokeType.Combustion:
-                if (!fuelIsBurned)
-                {
+                if (!fuelIsBurned) {
 
                     firstIntake = true;
                     fuelIsBurned = true;
@@ -72,8 +65,7 @@ public partial class Cylinder : Node3D
                 }
                 break;
             case StrokeType.Exhaust:
-                if (!exhaustedGas)
-                {
+                if (!exhaustedGas) {
                     fuelIsBurned = false;
 
                     //Add exhaust fumes mas inside current gas mixture
@@ -104,8 +96,7 @@ public partial class Cylinder : Node3D
 
     private float lastVolume;
     private float lastPressure;
-    private void ApplyFirstLawOfThremodynamics(out float work)
-    {
+    private void ApplyFirstLawOfThremodynamics(out float work) {
 
         float currentVolume = CurrentGasVolume;
         currentPressure = gasMasInsideCylinder * Combustion.GasConstant * gasTemperatureInsideCylinder / currentVolume;
@@ -137,8 +128,7 @@ public partial class Cylinder : Node3D
     public float currentPressure;
 
 
-    public void Start()
-    {
+    public void Start() {
 
         combustion.main = this;
 

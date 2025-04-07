@@ -1,8 +1,8 @@
 using Godot;
 using System;
 
-public partial class NoiseAndSin : Node
-{
+public partial class NoiseAndSin : Node {
+
 
     [Export] public AudioStreamPlayer Player { get; set; }
 
@@ -20,33 +20,28 @@ public partial class NoiseAndSin : Node
     [Export] private bool disable = false;
     [Export] bool distortion = true;
 
-    public override void _Ready()
-    {
+    public override void _Ready() {
         if (Player.Stream is AudioStreamGenerator generator) // Type as a generator to access MixRate.
         {
             Player.Play();
             _playback = (AudioStreamGeneratorPlayback)Player.GetStreamPlayback();
         }
     }
-    public override void _Process(double delta)
-    {
+    public override void _Process(double delta) {
         if (disable)
             return;
         PlaySound();
         base._Process(delta);
     }
     // ? To change rpm just change Base Frequency
-    public void PlaySound()
-    {
+    public void PlaySound() {
 
         int totalSamples = (int)(SampleRate * Duration);
         Vector2[] samples = new Vector2[totalSamples];
 
-        for (int i = 0; i < totalSamples; i++)
-        {
+        for (int i = 0; i < totalSamples; i++) {
             float value = 0;
-            for (int cylinder = 0; cylinder < culindersCount; cylinder++)
-            {
+            for (int cylinder = 0; cylinder < culindersCount; cylinder++) {
                 float time = ((float)i + cylinder * cylindersOffset) / SampleRate;
                 float wave = (time * frequency) % 1.0f < dutyCycle ? amplitude : 0;
                 // Generate white noise
@@ -63,19 +58,16 @@ public partial class NoiseAndSin : Node
 
     [Export] private float DistortionAmount = 1.5f;
     [Export] private float FeedbackAmount = 0.3f;
-    public void ApplyDistortion(int totalSamples, ref Vector2[] samples)
-    {
+    public void ApplyDistortion(int totalSamples, ref Vector2[] samples) {
         float feedback = 0f;
-        for (int i = 0; i < totalSamples; i++)
-        {
+        for (int i = 0; i < totalSamples; i++) {
             Vector2 startSample = samples[i];
             startSample.Y = Distort(startSample.Y, ref feedback);
             startSample.X = startSample.Y;
             samples[i] = startSample;
         }
     }
-    private float Distort(float input, ref float feedback)
-    {
+    private float Distort(float input, ref float feedback) {
         float distortedSignal = input * DistortionAmount;
 
         // Clipping

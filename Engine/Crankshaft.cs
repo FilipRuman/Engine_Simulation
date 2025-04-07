@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using Godot;
 [Tool]
-public partial class Crankshaft : Node3D
-{
+public partial class Crankshaft : Node3D {
+
     [ExportGroup("References")]
     [Export] public CrankshaftVisuals visuals;
 
@@ -23,23 +23,20 @@ public partial class Crankshaft : Node3D
     public float rodLength => rodLengthCm / 100f;
     public float crankPinLength => crankPinLengthCm / 100f;
 
-    public void UpdateCrankshaftStatsBasedOnDrivetrain(float linearVelocity, float whealRadius, float gearRatio, float delta)
-    {
+    public void UpdateCrankshaftStatsBasedOnDrivetrain(float linearVelocity, float whealRadius, float gearRatio, float delta) {
         float angularVelocityRad = linearVelocity / whealRadius * gearRatio;
         angularVelocityDeg = Mathf.RadToDeg(angularVelocityRad);
         shaftAngleDeg += angularVelocityDeg * delta;
     }
 
     [Export] bool statisticsSomething = true;
-    public override void _Process(double delta)
-    {
+    public override void _Process(double delta) {
         if (statisticsSomething)
             HandleStatisticsSmoothing();
 
         base._Process(delta);
     }
-    public override void _Ready()
-    {
+    public override void _Ready() {
 
         if (visuals == null)
             return;
@@ -52,8 +49,7 @@ public partial class Crankshaft : Node3D
 
     public int currentSmoothingFrame = 0;
 
-    private void HandleStatisticsSmoothing()
-    {
+    private void HandleStatisticsSmoothing() {
         currentSmoothingFrame++;
         if (currentSmoothingFrame < averageSmoothingFrames)
             return;
@@ -68,22 +64,18 @@ public partial class Crankshaft : Node3D
     public List<float> torques = new();
     public List<float> temperatures = new();
 
-    private float CalculateAverageTemeperature()
-    {
+    private float CalculateAverageTemeperature() {
         float sum = 0;
-        foreach (float temperature in temperatures)
-        {
+        foreach (float temperature in temperatures) {
             sum += temperature;
         }
         int count = temperatures.Count;
         temperatures.Clear();
         return sum / (float)count;
     }
-    private float CalculateAverageTorque()
-    {
+    private float CalculateAverageTorque() {
         float sum = 0;
-        foreach (float torque in torques)
-        {
+        foreach (float torque in torques) {
             sum += torque;
         }
         int count = torques.Count;
@@ -92,23 +84,19 @@ public partial class Crankshaft : Node3D
     }
 
     //https://en.wikipedia.org/wiki/Piston_motion_equations
-    public float GetPistonPositionAtAngle(float angleInDegrees)
-    {
+    public float GetPistonPositionAtAngle(float angleInDegrees) {
         var angleInRads = Mathf.DegToRad(angleInDegrees);
         return crankPinLength * Mathf.Cos(angleInRads) + Mathf.Sqrt(rodLength * rodLength - crankPinLength * crankPinLength * Mathf.Sin(angleInRads) * Mathf.Sin(angleInRads));
     }
 
 
-    public float GetStroke()
-    {
+    public float GetStroke() {
         return GetTopDeadCentreHeight() - GetBottomDeadCentreHeight();
     }
-    public float GetBottomDeadCentreHeight()
-    {
+    public float GetBottomDeadCentreHeight() {
         return GetPistonPositionAtAngle(90);
     }
-    public float GetTopDeadCentreHeight()
-    {
+    public float GetTopDeadCentreHeight() {
         return GetPistonPositionAtAngle(0);
     }
 

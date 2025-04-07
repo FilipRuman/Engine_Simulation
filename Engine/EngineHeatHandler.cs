@@ -1,7 +1,7 @@
 using Godot;
 [Tool]
-public partial class EngineHeatHandler : Node
-{
+public partial class EngineHeatHandler : Node {
+
     public EngineController engine;
 
     public float cylinderWallTemperature = 30 + 273;
@@ -20,13 +20,11 @@ public partial class EngineHeatHandler : Node
     private const float castIronSpecificHeatCapacity = 500f;//
     private const float castIronDensity = 7200f; //kg/m3
     private float coolantTempK => coolantTemperatureDeg + 273f;
-    public override void _Ready()
-    {
+    public override void _Ready() {
         cylinderWallTemperature = 30 + 273;
         base._Ready();
     }
-    public void HeatPhysics(float delta)
-    {
+    public void HeatPhysics(float delta) {
         if (cylinderWallThickness == 0)
             return;
         // I ignore cooling form piston and top end cap
@@ -38,8 +36,7 @@ public partial class EngineHeatHandler : Node
         // I should add mass of piston + end cap  but they should be thin 
         float massOfCylinderWalls = castIronDensity * cylinderWallAreaIn * cylinderWallThickness;
 
-        foreach (Cylinder cylinder in engine.cylinders)
-        {
+        foreach (Cylinder cylinder in engine.cylinders) {
             float convectiveHeatTransferCoefficient = CalculateConvectiveHeatTransferCoefficient(cylinder);
             float convectionHeatFlux = convectiveHeatTransferCoefficient * (cylinder.gasTemperatureInsideCylinder - cylinderWallTemperature);
 
@@ -71,14 +68,12 @@ public partial class EngineHeatHandler : Node
     }
 
     [Export] float gasVelocityModifier;
-    private float CalculateCylinderGasVelocity(Cylinder cylinder)
-    {
+    private float CalculateCylinderGasVelocity(Cylinder cylinder) {
         // there is that whole thing for Woschni correlation to calculate gas velocity but i think there is no sense in doing that
         // I'll just use  one from airflow
         return cylinder.airFlow.AveragePistoneVelocity * gasVelocityModifier;
     }
-    private float CalculateConvectiveHeatTransferCoefficient(Cylinder cylinder)
-    {
+    private float CalculateConvectiveHeatTransferCoefficient(Cylinder cylinder) {
         //Woschni correlation
         float bore = 130 * Mathf.Pow(engine.bore, -.2f);
         float velocity = Mathf.Pow(CalculateCylinderGasVelocity(cylinder), .8f);

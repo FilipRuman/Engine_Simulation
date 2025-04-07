@@ -1,8 +1,8 @@
 using System;
 using Godot;
 [Tool]
-public partial class AirFlow : Node
-{
+public partial class AirFlow : Node {
+
     public EngineController engine;
     public Crankshaft crankshaft;
 
@@ -16,8 +16,7 @@ public partial class AirFlow : Node
     private float throttleDiameter => throttleDiameterCm / 100f;
 
 
-    private float ValveLift()
-    {
+    private float ValveLift() {
         if (engine.overRPM)
             return MinValveLift;
         else
@@ -32,21 +31,18 @@ public partial class AirFlow : Node
 
 
     [Export(PropertyHint.Range, "0.4,0.8,")] private float flowEfficiency = .5f;
-    private float VolumetricFlowRate(float flowArea)
-    {
+    private float VolumetricFlowRate(float flowArea) {
         return flowArea * AveragePistoneVelocity * flowEfficiency;
     }
 
-    public float CalculateMasOfAirIntake(float deltaTime)
-    {
+    public float CalculateMasOfAirIntake(float deltaTime) {
         float gasDensity = Combustion.ambientAirDensity;
         return gasDensity * VolumetricFlowRate(CurrentEffectiveIntakeFlowArea) * intakeVelocityModifier * deltaTime;
     }
     [Export(PropertyHint.Range, "0.3,0.6,")] private float exhaustVelocityModifier = .5f;
     [Export] private float exhaustAreaCm = .5f;
     private float exhaustAreaM => exhaustAreaCm / 10000f;
-    public float CalculateMasOfExhaustGass(float deltaTime, Cylinder cylinder)
-    {
+    public float CalculateMasOfExhaustGass(float deltaTime, Cylinder cylinder) {
         float gasDensity = cylinder.gasMasInsideCylinder / cylinder.CurrentGasVolume;
         return gasDensity * VolumetricFlowRate(exhaustAreaM) * exhaustVelocityModifier * deltaTime;
     }

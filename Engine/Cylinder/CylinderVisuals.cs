@@ -1,14 +1,13 @@
 using Godot;
 [Tool, GlobalClass]
-public partial class CylinderVisuals : Node3D
-{
+public partial class CylinderVisuals : Node3D {
+
     public Cylinder main;
     public EngineController engine;
     [Export] private MeshInstance3D gasInsideCylinder;
     [Export] private MeshInstance3D piston;
 
-    public void UpdateMeshes()
-    {
+    public void UpdateMeshes() {
         float bore = engine.bore * engine.visualsScale;
         float pistonHeight = engine.pistonHeight * engine.visualsScale;
         float strokeLength = engine.strokeLength * engine.visualsScale;
