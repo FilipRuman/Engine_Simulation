@@ -11,24 +11,10 @@ public partial class CrankshaftVisuals : Node {
     [Export] private MeshInstance3D chankshaftMesh;
     [Export] private Node3D crankPinSpawnPoint;
     [Export] private PackedScene crankPinPrefab;
-    [Export] private EngineSoundController soundController;
 
     [Export] public float crankshaftLength = 10f;
     [Export] public float cylindersPadding = 5f;
 
-
-    [ExportGroup("Ui")]
-    [Export] Slider throttleSlider;
-    [Export] Label angularVelocityText;
-    [Export] Label totalTorque;
-    [Export] Label averageGasTemperature;
-
-    [Export] Label exhaustFumesRatioBeforeCombustion;
-    [Export] Label rpm;
-    [Export] Label horsePower;
-    [Export] Label temperature;
-    [Export] public CheckButton starterButton;
-    [Export] Label gameFps;
 
 
     public override void _Process(double delta) {
@@ -36,7 +22,6 @@ public partial class CrankshaftVisuals : Node {
             SpawnCrankPins();
 
 
-        UpdateTextUI();
         UpdateCrankShaftAndPinsMeshes();
         base._Process(delta);
     }
@@ -63,25 +48,6 @@ public partial class CrankshaftVisuals : Node {
     public Vector3 GetRelativeCylinderPlacement(uint cylinderIndex) {
         var lengthPerCylinder = (crankshaftLength - cylindersPadding * 2) / (float)(engine.cylinders.Length - 1);
         return new(0, main.GetBottomDeadCentreHeight(), lengthPerCylinder * cylinderIndex + cylindersPadding);
-    }
-
-    private void UpdateTextUI() {
-        // i just use one of cylinders so i don't heave to do any weird averaging, ratios should be similar in all cylinders
-        exhaustFumesRatioBeforeCombustion.Text = $"Exhaust fumes ratio in gas mixture before combustion {Math.Round(main.engine.cylinders[0].CurrentCombustionFumesAirRatio, 2)}";
-        gameFps.Text = $"FPS {Engine.GetFramesPerSecond()}";
-        rpm.Text = $"RPM: {Mathf.RoundToInt(main.RevolutionsPerSecond * 60f)}";
-        throttleSlider.Value = engine.throttle;
-        temperature.Text = $"Temperature of 1'st cylinder's wall: {Mathf.RoundToInt(engine.heatHandler.cylinderWallTemperature - 273)}C";
-
-        angularVelocityText.Text = $"Angular velocity: {Mathf.RoundToInt(main.angularVelocityDeg)}";
-
-        soundController.throttle = engine.overRPM ? 0 : engine.throttle;
-        soundController.rpm = main.RevolutionsPerSecond * 60f;
-
-        horsePower.Text = $"Horse power: {(int)main.engine.currentHorsePower}";
-        totalTorque.Text = $"Torque: {(int)engine.averageTorque}";
-        averageGasTemperature.Text = $"Average gas temperature: {(int)engine.cylinders[0].gasTemperatureInsideCylinder}";
-
     }
     private void UpdateCrankShaftAndPinsMeshes() {
         chankshaftMesh.Scale = new(1, crankshaftLength, 1);
