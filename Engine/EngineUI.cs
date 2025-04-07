@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+[Tool]
 public partial class EngineUI : Node {
     public EngineController engine;
     public Crankshaft crankshaft;

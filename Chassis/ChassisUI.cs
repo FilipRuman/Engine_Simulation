@@ -1,4 +1,5 @@
 using Godot;
+[Tool]
 public partial class ChassisUI : Node {
 
     [Export] ChassisMain main;
