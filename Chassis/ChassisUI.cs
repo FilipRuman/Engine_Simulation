@@ -43,7 +43,6 @@ public partial class ChassisUI : Node {
             dragText.Text = $"drag force: {Mathf.RoundToInt(main.currentDragForce)}";
     }
     public override void _Process(double delta) {
-
         HandleInput();
         HandleGraphicalUI();
 

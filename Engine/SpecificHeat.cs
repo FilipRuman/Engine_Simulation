@@ -2,7 +2,6 @@ using Godot;
 public static class SpecificHeat {
     // I fucking love this site <3 https://www.engineeringtoolbox 
 
-
     // I assume that 100% of fuel is fully burned, no CO, no O3, all of the pruducts from combustion are exhausted in intake && compression stroke
     // and that air is only N2 && O2 
     public static float GetCurrentSpecificHeat(Cylinder cylinder) {
@@ -25,7 +24,6 @@ public static class SpecificHeat {
         return Mathf.Lerp(0.7172f, 0.9535f, temperature / 1725f);
     }
 
-
     ///kJ/kgK
     ///https://www.engineeringtoolbox.com/carbon-dioxide-d_974.html
     private static float CO2(float temperature) {
@@ -47,7 +45,6 @@ public static class SpecificHeat {
         temperature -= 175f;
         return Mathf.Lerp(CpToCv(1.039f, specificGasConstant), CpToCv(1.039f, specificGasConstant), temperature / 5825f);
     }
-
 
     //cp=cv+R
     /// Converts isobaric to isochronic specific heat

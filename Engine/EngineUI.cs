@@ -24,26 +24,20 @@ public partial class EngineUI : Node {
     public void AddCurrentPhysicsStatsForGraph() {
         graph.AddDataToEnd(engine.currentHorsePower, graphPowerDataGroupIndex);
         graph.AddDataToEnd(engine.currentTorque, graphTorqueDataGroupIndex);
-
     }
 
     public override void _Process(double delta) {
-
-
         UpdateTextUI();
         base._Process(delta);
     }
 
     [Export] string throttleActionName = "throttle";
     private void HandleInput() {
-
         if (Engine.IsEditorHint())
             return;
 
         if (throttleActionName != "")
             engine.throttle = Input.GetActionStrength(throttleActionName);
-
-
     }
     private void UpdateTextUI() {
         // i just use one of cylinders so i don't heave to do any weird averaging, ratios should be similar in all cylinders
@@ -61,7 +55,6 @@ public partial class EngineUI : Node {
         horsePower.Text = $"Horse power: {(int)crankshaft.engine.currentHorsePower}";
         totalTorque.Text = $"Torque: {(int)engine.averageTorque}";
         averageGasTemperature.Text = $"Average gas temperature: {(int)engine.cylinders[0].gasTemperatureInsideCylinder}";
-
     }
 
 }
