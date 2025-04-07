@@ -4,15 +4,12 @@ using Godot;
 [Tool]
 public partial class Crankshaft : Node3D {
 
-    [ExportGroup("References")]
     [Export] public CrankshaftVisuals visuals;
-
-
     [Export] public EngineController engine;
-    [ExportGroup("Angle relatedStuff")]
 
-    [Export] public float shaftAngleDeg = 0;
-    [Export] public float angularVelocityDeg = 1;
+
+    public float shaftAngleDeg = 0;
+    public float angularVelocityDeg = 1;
 
     public float RevolutionsPerSecond => Mathf.DegToRad(angularVelocityDeg) / Mathf.Tau;
 
