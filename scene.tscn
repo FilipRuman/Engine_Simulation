@@ -1,21 +1,19 @@
-[gd_scene load_steps=15 format=3 uid="uid://dousinkic130u"]
+[gd_scene load_steps=18 format=3 uid="uid://dousinkic130u"]
 
 [ext_resource type="Script" uid="uid://ccblf4w2x8ob8" path="res://Engine/EngineController.cs" id="1_xlvrw"]
 [ext_resource type="Script" uid="uid://b7ba3uaxjle7" path="res://Engine/Crankshaft.cs" id="2_3253y"]
 [ext_resource type="Script" uid="uid://bdyfbuaytxbci" path="res://Engine/EngineHeatHandler.cs" id="3_73fnb"]
+[ext_resource type="Script" uid="uid://c0x5rause6t86" path="res://Engine/EngineUI.cs" id="4_5c1cw"]
 [ext_resource type="Script" uid="uid://x1ardn0rs4bd" path="res://Engine/CrankshaftVisuals.cs" id="4_73fnb"]
 [ext_resource type="Script" uid="uid://0ahy3760o3gk" path="res://Engine/Cylinder/AirFlow.cs" id="4_y2354"]
 [ext_resource type="PackedScene" uid="uid://yr1lm7flecqr" path="res://Engine/crank_pin_new.tscn" id="5_xlvrw"]
+[ext_resource type="Script" uid="uid://dxb56a7ylbrri" path="res://Engine/EngineStatsSmoothing.cs" id="6_gu47o"]
 [ext_resource type="PackedScene" uid="uid://bbychswvrpwhn" path="res://Engine/Cylinder/cylinder.tscn" id="7_73fnb"]
 [ext_resource type="PackedScene" uid="uid://dsg5g4ti0n3gt" path="res://Sounds/soundscene.tscn" id="7_ni31j"]
+[ext_resource type="PackedScene" uid="uid://ct4nyvedk3n8r" path="res://Graphs/graph_scene.tscn" id="8_akxrc"]
 [ext_resource type="Script" uid="uid://c38ac4trq2i3u" path="res://Chassis/ChassisMain.cs" id="9_5juve"]
-[ext_resource type="Script" uid="uid://diqooxq6v3h67" path="res://Chassis/ChassisVisuals.cs" id="9_fy5k1"]
+[ext_resource type="Script" uid="uid://ds6cv14cjet8v" path="res://Chassis/ChassisUI.cs" id="11_5c1cw"]
 [ext_resource type="Material" uid="uid://dno6n2t4wsqta" path="res://sprites/Gridbox Prototype Materials/Materials/wing mat.tres" id="11_fy5k1"]
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_u3cyc"]
-top_radius = 1.0
-bottom_radius = 1.0
-height = 1.0
 
 [sub_resource type="Curve" id="Curve_5juve"]
 _limits = [107.603, 310.64, 0.0, 500.0]
@@ -23,12 +21,69 @@ bake_resolution = 1000
 _data = [Vector2(0, 107.603), 0.0, 0.692897, 0, 0, Vector2(500, 310.64), 1.07565, 0.0, 0, 0]
 point_count = 2
 
+[sub_resource type="CylinderMesh" id="CylinderMesh_u3cyc"]
+top_radius = 1.0
+bottom_radius = 1.0
+height = 1.0
+
 [sub_resource type="BoxMesh" id="BoxMesh_5c1cw"]
 
 [node name="Scene" type="Node3D"]
 
-[node name="Engine controller" type="Node" parent="." node_paths=PackedStringArray("airFlow", "cylinders", "crankshaft", "heatHandler")]
+[node name="chassis" type="Node" parent="." node_paths=PackedStringArray("crankshaft", "engine")]
+script = ExtResource("9_5juve")
+crankshaft = NodePath("Engine controller/crankShaft")
+engine = NodePath("Engine controller")
+mass = 5000.0
+breakeTorque = 200000.0
+gearRatios = PackedFloat32Array(0.25, 0.45, 0.65, 0.8, 1, 1.15, 1.4)
+whealRadious = 0.15
+starterSpeed = 8.0
+dragBasedOnVelocity = SubResource("Curve_5juve")
+
+[node name="ChassisVisuals" type="Node" parent="chassis" node_paths=PackedStringArray("main", "gearText", "linearVelocityText", "dragText", "starterButton")]
+script = ExtResource("11_5c1cw")
+main = NodePath("..")
+gearText = NodePath("VBoxContainer/gear")
+linearVelocityText = NodePath("VBoxContainer/velocity")
+dragText = NodePath("VBoxContainer/drag force")
+starterButton = NodePath("VBoxContainer/starter")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="chassis/ChassisVisuals"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -174.0
+offset_top = -77.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="gear" type="Label" parent="chassis/ChassisVisuals/VBoxContainer"]
+layout_mode = 2
+text = "gear: 0"
+vertical_alignment = 1
+
+[node name="velocity" type="Label" parent="chassis/ChassisVisuals/VBoxContainer"]
+layout_mode = 2
+text = "velocity: 0"
+vertical_alignment = 1
+
+[node name="drag force" type="Label" parent="chassis/ChassisVisuals/VBoxContainer"]
+layout_mode = 2
+text = "drag force: 0"
+vertical_alignment = 1
+
+[node name="starter" type="CheckButton" parent="chassis/ChassisVisuals/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Starter"
+
+[node name="Engine controller" type="Node" parent="chassis" node_paths=PackedStringArray("ui", "statsSmoothing", "airFlow", "cylinders", "crankshaft", "heatHandler")]
 script = ExtResource("1_xlvrw")
+ui = NodePath("UI")
+statsSmoothing = NodePath("Stats smoothing")
 airFlow = NodePath("Airflow")
 cylinders = [NodePath("crankShaft/Cylinder"), NodePath("crankShaft/Cylinder2"), NodePath("crankShaft/Cylinder3"), NodePath("crankShaft/Cylinder4")]
 crankshaft = NodePath("crankShaft")
@@ -43,7 +98,7 @@ additionalUpwardHeightDm = 0.11
 pistonHeightCm = 3.0
 visualsScale = 74.54
 
-[node name="Airflow" type="Node" parent="Engine controller"]
+[node name="Airflow" type="Node" parent="chassis/Engine controller"]
 script = ExtResource("4_y2354")
 MaxValveLiftCm = 150.0
 throttleDiameterCm = 10.0
@@ -52,7 +107,7 @@ flowEfficiency = 0.8
 exhaustVelocityModifier = 0.6
 exhaustAreaCm = 1600.0
 
-[node name="Heat handler" type="Node" parent="Engine controller"]
+[node name="Heat handler" type="Node" parent="chassis/Engine controller"]
 script = ExtResource("3_73fnb")
 emissivityOfTheGas = 0.039
 coolantTemperatureDeg = 23.0
@@ -61,25 +116,14 @@ coolingAreaModifier = 6.0
 heatingAreaModifier = 10.0
 gasVelocityModifier = 0.001
 
-[node name="crankShaft" type="Node3D" parent="Engine controller" node_paths=PackedStringArray("visuals", "engine")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.956, -29.461)
-script = ExtResource("2_3253y")
-visuals = NodePath("visuals")
-engine = NodePath("..")
-shaftAngleDeg = 360.0
-angularVelocityDeg = 1000.0
-rodLengthCm = 1605.07
-crankPinLengthCm = 11.53
-averageSmoothingFrames = 800
+[node name="Stats smoothing" type="Node" parent="chassis/Engine controller"]
+script = ExtResource("6_gu47o")
+averageSmoothingFrames = 10
 
-[node name="visuals" type="Node" parent="Engine controller/crankShaft" node_paths=PackedStringArray("chankshaftMesh", "crankPinSpawnPoint", "soundController", "throttleSlider", "angularVelocityText", "totalTorque", "averageGasTemperature", "exhaustFumesRatioBeforeCombustion", "rpm", "horsePower", "temperature", "starterButton", "gameFps")]
-script = ExtResource("4_73fnb")
-chankshaftMesh = NodePath("../crankShaftMesh")
-crankPinSpawnPoint = NodePath("../crankPinSpawnPoint")
-crankPinPrefab = ExtResource("5_xlvrw")
-soundController = NodePath("../../../Scene/Engine controller")
-crankshaftLength = 120.0
-cylindersPadding = 12.0
+[node name="UI" type="Node" parent="chassis/Engine controller" node_paths=PackedStringArray("graph", "soundController", "throttleSlider", "angularVelocityText", "totalTorque", "averageGasTemperature", "exhaustFumesRatioBeforeCombustion", "rpm", "horsePower", "temperature", "gameFps")]
+script = ExtResource("4_5c1cw")
+graph = NodePath("Graph scene")
+soundController = NodePath("Sound scene/Engine controller")
 throttleSlider = NodePath("throttle")
 angularVelocityText = NodePath("VBoxContainer/angular velocity")
 totalTorque = NodePath("VBoxContainer/torque")
@@ -88,64 +132,22 @@ exhaustFumesRatioBeforeCombustion = NodePath("VBoxContainer/exhaust fumes")
 rpm = NodePath("VBoxContainer/rpm")
 horsePower = NodePath("VBoxContainer/horse power")
 temperature = NodePath("VBoxContainer/temperature")
-starterButton = NodePath("VBoxContainer/starter")
-gameFps = NodePath("fps")
+gameFps = NodePath("VBoxContainer/fps")
+graphTorqueDataGroupIndex = 1
 
-[node name="fps" type="Label" parent="Engine controller/crankShaft/visuals"]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -217.0
-offset_right = 217.0
-offset_bottom = 23.0
-grow_horizontal = 2
-text = "FPS 144"
-horizontal_alignment = 1
+[node name="Sound scene" parent="chassis/Engine controller/UI" instance=ExtResource("7_ni31j")]
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Engine controller/crankShaft/visuals"]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 14.0
-offset_top = -222.0
-offset_right = 448.0
-offset_bottom = -2.0
-grow_vertical = 0
+[node name="Engine synth" parent="chassis/Engine controller/UI/Sound scene" index="0"]
+DistortionAmount = 9.595
+FeedbackAmount = 9.84
 
-[node name="angular velocity" type="Label" parent="Engine controller/crankShaft/visuals/VBoxContainer"]
-layout_mode = 2
-text = "Angular velocity: 1000"
+[node name="AudioStreamPlayer" parent="chassis/Engine controller/UI/Sound scene/Engine synth" index="0"]
+volume_db = 1.0
 
-[node name="torque" type="Label" parent="Engine controller/crankShaft/visuals/VBoxContainer"]
-layout_mode = 2
-text = "Torque: -2147483648"
+[node name="Engine controller" parent="chassis/Engine controller/UI/Sound scene" index="1"]
+volumeMinMax = Vector2(1, 10)
 
-[node name="horse power" type="Label" parent="Engine controller/crankShaft/visuals/VBoxContainer"]
-layout_mode = 2
-text = "Horse power: 0"
-
-[node name="rpm" type="Label" parent="Engine controller/crankShaft/visuals/VBoxContainer"]
-layout_mode = 2
-text = "RPM: 167"
-
-[node name="temperature" type="Label" parent="Engine controller/crankShaft/visuals/VBoxContainer"]
-layout_mode = 2
-text = "Temperature of 1'st cylinder's wall: 30C"
-
-[node name="exhaust fumes" type="Label" parent="Engine controller/crankShaft/visuals/VBoxContainer"]
-layout_mode = 2
-text = "Exhaust fumes ratio in gas mixture before combustion 1"
-
-[node name="gas temperature" type="Label" parent="Engine controller/crankShaft/visuals/VBoxContainer"]
-layout_mode = 2
-text = "Average gas temperature: 10000"
-
-[node name="starter" type="CheckButton" parent="Engine controller/crankShaft/visuals/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Starter"
-
-[node name="throttle" type="VSlider" parent="Engine controller/crankShaft/visuals"]
+[node name="throttle" type="VSlider" parent="chassis/Engine controller/UI"]
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -155,83 +157,102 @@ grow_vertical = 0
 max_value = 1.0
 step = 0.0
 
-[node name="crankPinSpawnPoint" type="Node3D" parent="Engine controller/crankShaft"]
-transform = Transform3D(0.999999, -1.74845e-07, 0, 1.74845e-07, 0.999999, 0, 0, 0, 1, 0, 0, 0)
+[node name="VBoxContainer" type="VBoxContainer" parent="chassis/Engine controller/UI"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 14.0
+offset_top = -222.0
+offset_right = 448.0
+offset_bottom = -2.0
+grow_vertical = 0
+
+[node name="angular velocity" type="Label" parent="chassis/Engine controller/UI/VBoxContainer"]
+layout_mode = 2
+text = "Angular velocity: 1"
+
+[node name="torque" type="Label" parent="chassis/Engine controller/UI/VBoxContainer"]
+layout_mode = 2
+text = "Torque: -2147483648"
+
+[node name="horse power" type="Label" parent="chassis/Engine controller/UI/VBoxContainer"]
+layout_mode = 2
+text = "Horse power: 0"
+
+[node name="rpm" type="Label" parent="chassis/Engine controller/UI/VBoxContainer"]
+layout_mode = 2
+text = "RPM: 0"
+
+[node name="temperature" type="Label" parent="chassis/Engine controller/UI/VBoxContainer"]
+layout_mode = 2
+text = "Temperature of 1'st cylinder's wall: 30C"
+
+[node name="exhaust fumes" type="Label" parent="chassis/Engine controller/UI/VBoxContainer"]
+layout_mode = 2
+text = "Exhaust fumes ratio in gas mixture before combustion 1"
+
+[node name="gas temperature" type="Label" parent="chassis/Engine controller/UI/VBoxContainer"]
+layout_mode = 2
+text = "Average gas temperature: 10000"
+
+[node name="fps" type="Label" parent="chassis/Engine controller/UI/VBoxContainer"]
+layout_mode = 2
+text = "FPS 55"
+horizontal_alignment = 1
+
+[node name="Graph scene" parent="chassis/Engine controller/UI" instance=ExtResource("8_akxrc")]
+offset_left = 720.0
+offset_bottom = -436.0
+
+[node name="crankShaft" type="Node3D" parent="chassis/Engine controller" node_paths=PackedStringArray("visuals", "engine")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.956, -29.461)
+script = ExtResource("2_3253y")
+visuals = NodePath("visuals")
+engine = NodePath("..")
+rodLengthCm = 1605.07
+crankPinLengthCm = 11.53
+
+[node name="visuals" type="Node" parent="chassis/Engine controller/crankShaft" node_paths=PackedStringArray("chankshaftMesh", "crankPinSpawnPoint")]
+script = ExtResource("4_73fnb")
+chankshaftMesh = NodePath("../crankShaftMesh")
+crankPinSpawnPoint = NodePath("../crankPinSpawnPoint")
+crankPinPrefab = ExtResource("5_xlvrw")
+crankshaftLength = 120.0
+cylindersPadding = 12.0
+
+[node name="crankPinSpawnPoint" type="Node3D" parent="chassis/Engine controller/crankShaft"]
+transform = Transform3D(0.999999, 0, 0, 0, 0.999999, 0, 0, 0, 1, 0, 0, 0)
 rotation_order = 0
 
-[node name="crankShaftMesh" type="MeshInstance3D" parent="Engine controller/crankShaft"]
-transform = Transform3D(1, 0, 1.74846e-07, 1.74846e-07, -5.24537e-06, -1, 7.64274e-15, 120, -4.37114e-08, 0, 0, 60)
+[node name="crankShaftMesh" type="MeshInstance3D" parent="chassis/Engine controller/crankShaft"]
+transform = Transform3D(1, 0, 0, 0, -5.24537e-06, -1, 0, 120, -4.37114e-08, 0, 0, 60)
 rotation_order = 0
 mesh = SubResource("CylinderMesh_u3cyc")
 
-[node name="Cylinder4" parent="Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
+[node name="Cylinder4" parent="chassis/Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.0503, 108)
 cylinderIndex = 3
 pistonPosition = 1.0
-currentStrokeType = 3
+currentStrokeType = 1
 
-[node name="Cylinder3" parent="Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
+[node name="Cylinder3" parent="chassis/Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.0503, 76)
 cylinderIndex = 2
 angleOffset = 540.0
 pistonPosition = -0.992854
-currentStrokeType = 2
 
-[node name="Cylinder2" parent="Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
+[node name="Cylinder2" parent="chassis/Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.0503, 44)
 cylinderIndex = 1
 angleOffset = 180.0
 pistonPosition = -0.992854
+currentStrokeType = 2
 
-[node name="Cylinder" parent="Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
+[node name="Cylinder" parent="chassis/Engine controller/crankShaft" instance=ExtResource("7_73fnb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.0503, 12)
 angleOffset = 360.0
 pistonPosition = 1.0
-currentStrokeType = 1
-
-[node name="chassis" type="Node" parent="Engine controller" node_paths=PackedStringArray("crankshaft", "engine")]
-script = ExtResource("9_5juve")
-crankshaft = NodePath("../crankShaft")
-engine = NodePath("..")
-mass = 5000.0
-breakeTorque = 200000.0
-gearRatios = PackedFloat32Array(0.25, 0.45, 0.65, 0.8, 1, 1.15, 1.4)
-whealRadious = 0.15
-starterSpeed = 8.0
-dragBasedOnVelocity = SubResource("Curve_5juve")
-
-[node name="ChassisVisuals" type="Node" parent="Engine controller/chassis" node_paths=PackedStringArray("main", "gearText", "linearVelocityText", "dragText")]
-script = ExtResource("9_fy5k1")
-main = NodePath("..")
-gearText = NodePath("VBoxContainer/gear")
-linearVelocityText = NodePath("VBoxContainer/velocity")
-dragText = NodePath("VBoxContainer/drag force")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Engine controller/chassis/ChassisVisuals"]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -174.0
-offset_top = -77.0
-grow_horizontal = 0
-grow_vertical = 0
-
-[node name="gear" type="Label" parent="Engine controller/chassis/ChassisVisuals/VBoxContainer"]
-layout_mode = 2
-text = "gear:"
-vertical_alignment = 1
-
-[node name="velocity" type="Label" parent="Engine controller/chassis/ChassisVisuals/VBoxContainer"]
-layout_mode = 2
-text = "velocity:"
-vertical_alignment = 1
-
-[node name="drag force" type="Label" parent="Engine controller/chassis/ChassisVisuals/VBoxContainer"]
-layout_mode = 2
-text = "drag force:"
-vertical_alignment = 1
+currentStrokeType = 3
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.260505, -0.217184, 0.940727, 0, 0.97437, 0.224951, -0.965473, -0.0586007, 0.253828, 0, 0, 0)
@@ -239,22 +260,9 @@ transform = Transform3D(0.260505, -0.217184, 0.940727, 0, 0.97437, 0.224951, -0.
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 50.4014, 23.9435, 26.5816)
 
-[node name="Scene" parent="." instance=ExtResource("7_ni31j")]
-
-[node name="Engine synth" parent="Scene" index="0"]
-DistortionAmount = 9.595
-FeedbackAmount = 9.84
-
-[node name="AudioStreamPlayer" parent="Scene/Engine synth" index="0"]
-volume_db = 1.0
-pitch_scale = 0.00694444
-
-[node name="Engine controller" parent="Scene" index="3"]
-volumeMinMax = Vector2(1, 10)
-
 [node name="background" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 143.83, 0, 0, 0, 230.355, -8.2, 0, 0)
 mesh = SubResource("BoxMesh_5c1cw")
 surface_material_override/0 = ExtResource("11_fy5k1")
 
-[editable path="Scene"]
+[editable path="chassis/Engine controller/UI/Sound scene"]

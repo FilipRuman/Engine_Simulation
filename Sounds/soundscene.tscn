@@ -1,12 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://dsg5g4ti0n3gt"]
+[gd_scene load_steps=4 format=3 uid="uid://dsg5g4ti0n3gt"]
 
 [ext_resource type="Script" uid="uid://w5adw34732eb" path="res://Sounds/NoiseAndSin.cs" id="1_4hc11"]
 [ext_resource type="Script" uid="uid://eh14vxcq50fm" path="res://Sounds/EngineSoundController.cs" id="4_787sv"]
 
 [sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_xfmxv"]
-
-[sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_wbwwc"]
-buffer_length = 10.0
 
 [node name="Scene" type="Node3D"]
 
@@ -31,18 +28,6 @@ mix_target = 2
 max_polyphony = 3
 bus = &"Engine"
 
-[node name="Wind synth" type="Node" parent="."]
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Wind synth"]
-stream = SubResource("AudioStreamGenerator_wbwwc")
-volume_db = 1.0
-mix_target = 2
-bus = &"Wind"
-
-[node name="LFO" type="Node" parent="."]
-
 [node name="Engine controller" type="Node" parent="." node_paths=PackedStringArray("player")]
 script = ExtResource("4_787sv")
 player = NodePath("../Engine synth/AudioStreamPlayer")
-
-[node name="WindController" type="Node" parent="."]
