@@ -12,6 +12,9 @@ public partial class EngineController : Node {
     [Export] public EngineHeatHandler heatHandler;
 
     public override void _Ready() {
+        ui.engine = this;
+        ui.crankshaft = crankshaft;
+
         statsSmoothing.engine = this;
         heatHandler.engine = this;
         airFlow.engine = this;

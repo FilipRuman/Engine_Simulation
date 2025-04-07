@@ -15,6 +15,9 @@ public partial class ChassisUI : Node {
     [Export] string brakeActionName = "breake";
     private void HandleInput() {
 
+        if (Engine.IsEditorHint())
+            return;
+
         if (nextGearActionName != "" && Input.IsActionJustPressed(nextGearActionName) && main.gear != main.gearRatios.Length - 1)
             main.gear++;
         if (previousGearActionName != "" && Input.IsActionJustPressed(previousGearActionName) && main.gear != 0)

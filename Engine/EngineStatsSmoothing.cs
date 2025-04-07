@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+[Tool]
 public partial class EngineStatsSmoothing : Node {
     public EngineController engine;
 

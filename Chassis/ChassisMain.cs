@@ -1,6 +1,6 @@
 using Godot;
+[Tool]
 public partial class ChassisMain : Node {
-    [Export] ChassisUI ui;
     [Export] Crankshaft crankshaft;
     [Export] EngineController engine;
     [Export] private float mass; // kg

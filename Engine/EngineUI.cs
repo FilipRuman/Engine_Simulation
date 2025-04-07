@@ -37,6 +37,9 @@ public partial class EngineUI : Node {
     [Export] string throttleActionName = "throttle";
     private void HandleInput() {
 
+        if (Engine.IsEditorHint())
+            return;
+
         if (throttleActionName != "")
             engine.throttle = Input.GetActionStrength(throttleActionName);
 
