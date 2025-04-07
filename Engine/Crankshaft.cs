@@ -10,7 +10,6 @@ public partial class Crankshaft : Node3D {
 
     public float shaftAngleDeg = 0;
     public float angularVelocityDeg = 1;
-
     public float RevolutionsPerSecond => Mathf.DegToRad(angularVelocityDeg) / Mathf.Tau;
 
     [ExportGroup("piston connection settings")]

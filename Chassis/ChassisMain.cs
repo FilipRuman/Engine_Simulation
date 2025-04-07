@@ -24,10 +24,10 @@ public partial class ChassisMain : Node {
         if (Engine.IsEditorHint())
             return;
 
+        engine.HandlePhysics((float)delta);
+        engine.PhysicsProcessDataForLaterUI();
 
-        float engineTorque = engine.HandlePhysicsAndReturnTorque((float)delta);
-        engine.statsSmoothing.AddDataToSmoothing(engineTorque);
-        float totalEngineForce = ModifyTorqueByDrivetrainRatio(engineTorque);
+        float totalEngineForce = ModifyTorqueByDrivetrainRatio(engine.currentTorque);
         currentDragForce = dragBasedOnVelocity.SampleBaked(linearVelocity) * dragModifier;
 
         float breakeForce = breakeTorque * brakePosition;

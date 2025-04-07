@@ -3,6 +3,8 @@ using Godot;
 [Tool]
 public partial class EngineController : Node {
 
+
+    [Export] public EngineUI ui;
     [Export] public EngineStatsSmoothing statsSmoothing;
     [Export] public AirFlow airFlow;
     [Export] public Cylinder[] cylinders;
@@ -58,6 +60,7 @@ public partial class EngineController : Node {
 
     public float currentPower; // Watts
     public float currentHorsePower => currentPower / 745.7f;
+    public float currentTorque;
 
     public bool overRPM = false;
     private void CalculateDisplacement() {
@@ -72,7 +75,7 @@ public partial class EngineController : Node {
 
 
     float lastAngleDeg = 0;
-    public float HandlePhysicsAndReturnTorque(float delta) {
+    public void HandlePhysics(float delta) {
         overRPM = crankshaft.RevolutionsPerSecond * 60f > rpmLimit;
 
         //abs so engine doesn't run backwards
@@ -89,8 +92,10 @@ public partial class EngineController : Node {
 
         heatHandler.HeatPhysics(delta);
         currentPower = torque * crankshaft.RevolutionsPerSecond * 2 * Mathf.Pi;
-
-
-        return torque;
+        currentTorque = torque;
+    }
+    public void PhysicsProcessDataForLaterUI() {
+        statsSmoothing.AddDataToSmoothing(currentTorque);
+        ui.AddCurrentPhysicsStatsForGraph();
     }
 }
