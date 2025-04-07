@@ -3,12 +3,14 @@ using Godot;
 [Tool]
 public partial class EngineController : Node {
 
+    [Export] public EngineStatsSmoothing statsSmoothing;
     [Export] public AirFlow airFlow;
     [Export] public Cylinder[] cylinders;
     [Export] private Crankshaft crankshaft;
     [Export] public EngineHeatHandler heatHandler;
 
     public override void _Ready() {
+        statsSmoothing.engine = this;
         heatHandler.engine = this;
         airFlow.engine = this;
         airFlow.crankshaft = crankshaft;
@@ -65,8 +67,12 @@ public partial class EngineController : Node {
     }
     /// m^3
 
+    public float averageTemperature;
+    public float averageTorque;
+
+
     float lastAngleDeg = 0;
-    public float HandlePhysicsAndCalculateTorque(float delta) {
+    public float HandlePhysicsAndReturnTorque(float delta) {
         overRPM = crankshaft.RevolutionsPerSecond * 60f > rpmLimit;
 
         //abs so engine doesn't run backwards
@@ -85,8 +91,6 @@ public partial class EngineController : Node {
         currentPower = torque * crankshaft.RevolutionsPerSecond * 2 * Mathf.Pi;
 
 
-        crankshaft.torques.Add(torque);
-        crankshaft.temperatures.Add(temperatureSum / (float)cylinders.Length);
         return torque;
     }
 }

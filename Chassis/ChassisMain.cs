@@ -23,7 +23,8 @@ public partial class ChassisMain : Node {
 
 
         float currentGearRatio = 1 / gearRatios[gear];
-        float engineTorque = engine.HandlePhysicsAndCalculateTorque((float)delta);
+        float engineTorque = engine.HandlePhysicsAndReturnTorque((float)delta);
+        engine.statsSmoothing.AddDataToSmoothing(engineTorque);
 
         float forceAtTheWheals = (engineTorque * currentGearRatio) / whealRadious;
         const int drivenWheals = 4;
@@ -34,7 +35,6 @@ public partial class ChassisMain : Node {
         float breakeForce = breakeTorque * brakePosition;
         float netForce = totalEngineForce - breakeForce - currentDragForce;
         float acceleration = netForce / mass;
-        //TODO: change that to keybinding
 
 
         linearVelocity += (acceleration * (float)delta) * msToKm;

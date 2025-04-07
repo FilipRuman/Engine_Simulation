@@ -31,8 +31,6 @@ public partial class CrankshaftVisuals : Node {
     [Export] Label gameFps;
 
 
-    public float averageTemperature;
-    public float averageTorque;
     public override void _Process(double delta) {
         if (Engine.IsEditorHint())
             SpawnCrankPins();
@@ -81,7 +79,7 @@ public partial class CrankshaftVisuals : Node {
         soundController.rpm = main.RevolutionsPerSecond * 60f;
 
         horsePower.Text = $"Horse power: {(int)main.engine.currentHorsePower}";
-        totalTorque.Text = $"Torque: {(int)averageTorque}";
+        totalTorque.Text = $"Torque: {(int)engine.averageTorque}";
         averageGasTemperature.Text = $"Average gas temperature: {(int)engine.cylinders[0].gasTemperatureInsideCylinder}";
 
     }

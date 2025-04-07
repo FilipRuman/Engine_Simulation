@@ -29,13 +29,6 @@ public partial class Crankshaft : Node3D {
         shaftAngleDeg += angularVelocityDeg * delta;
     }
 
-    [Export] bool statisticsSomething = true;
-    public override void _Process(double delta) {
-        if (statisticsSomething)
-            HandleStatisticsSmoothing();
-
-        base._Process(delta);
-    }
     public override void _Ready() {
 
         if (visuals == null)
@@ -45,42 +38,6 @@ public partial class Crankshaft : Node3D {
         visuals.engine = engine;
         visuals.SpawnCrankPins();
         base._Ready();
-    }
-
-    public int currentSmoothingFrame = 0;
-
-    private void HandleStatisticsSmoothing() {
-        currentSmoothingFrame++;
-        if (currentSmoothingFrame < averageSmoothingFrames)
-            return;
-        currentSmoothingFrame = 0;
-
-
-        visuals.averageTemperature = CalculateAverageTemeperature();
-        visuals.averageTorque = CalculateAverageTorque();
-    }
-
-    [Export] public int averageSmoothingFrames;
-    public List<float> torques = new();
-    public List<float> temperatures = new();
-
-    private float CalculateAverageTemeperature() {
-        float sum = 0;
-        foreach (float temperature in temperatures) {
-            sum += temperature;
-        }
-        int count = temperatures.Count;
-        temperatures.Clear();
-        return sum / (float)count;
-    }
-    private float CalculateAverageTorque() {
-        float sum = 0;
-        foreach (float torque in torques) {
-            sum += torque;
-        }
-        int count = torques.Count;
-        torques.Clear();
-        return sum / (float)count;
     }
 
     //https://en.wikipedia.org/wiki/Piston_motion_equations
