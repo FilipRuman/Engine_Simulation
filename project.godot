@@ -29,7 +29,6 @@ project/assembly_name="New Game Project"
 
 [editor]
 
-movie_writer/disable_vsync=true
 movie_writer/fps=144
 
 [input]

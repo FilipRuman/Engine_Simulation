@@ -6,7 +6,6 @@ public partial class EngineUI : Node {
     public EngineController engine;
     public Crankshaft crankshaft;
 
-    [Export] private GraphMain graph;
     [Export] private EngineSoundController soundController;
     [Export] Slider throttleSlider;
     [Export] Label angularVelocityText;
@@ -19,14 +18,8 @@ public partial class EngineUI : Node {
     [Export] Label temperature;
     [Export] Label gameFps;
 
-    [Export] public uint graphPowerDataGroupIndex;
-    [Export] public uint graphTorqueDataGroupIndex;
-    public void AddCurrentPhysicsStatsForGraph() {
-        graph.AddDataToEnd(engine.currentHorsePower, graphPowerDataGroupIndex);
-        graph.AddDataToEnd(engine.currentTorque, graphTorqueDataGroupIndex);
-    }
-
     public override void _Process(double delta) {
+        HandleInput();
         UpdateTextUI();
         base._Process(delta);
     }

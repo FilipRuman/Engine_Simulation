@@ -46,6 +46,38 @@ public partial class ChassisUI : Node {
         HandleInput();
         HandleGraphicalUI();
 
+        powerCalculationTickSystem.Update((float)delta);
         base._Process(delta);
+    }
+
+    public override void _Ready() {
+        powerCalculationTickSystem.toCall = new(1);
+        powerCalculationTickSystem.toCall.Add(CalculatePower);
+        powerCalculationTickSystem.updatesPerSecond = powerSamplesPerSecond;
+
+        base._Ready();
+    }
+
+    [Export] private GraphMain graph;
+
+    [Export] float powerSamplesPerSecond;
+    private TickSystem powerCalculationTickSystem = new();
+    private float lastVelocity;
+
+    [Export] public uint graphPowerDataGroupIndex;
+    [Export] public uint graphTorqueDataGroupIndex;
+
+    private void CalculatePower(float deltaTime) {
+        float deltaVelocity = main.linearVelocity - lastVelocity;
+        float meanVelocity = (main.linearVelocity + lastVelocity) / 2f;
+        float acceleration = deltaVelocity / deltaTime;
+
+        float power = acceleration * main.mass * meanVelocity;
+        main.engine.currentPower = power;
+
+        lastVelocity = main.linearVelocity;
+
+        graph.AddDataToEnd(main.engine.currentHorsePower, graphPowerDataGroupIndex);
+        graph.AddDataToEnd(main.engine.currentTorque, graphTorqueDataGroupIndex);
     }
 }

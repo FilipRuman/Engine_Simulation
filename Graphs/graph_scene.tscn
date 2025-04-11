@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://ct4nyvedk3n8r"]
+[gd_scene load_steps=14 format=3 uid="uid://ct4nyvedk3n8r"]
 
 [ext_resource type="Script" uid="uid://b0fqy4nburr5" path="res://Graphs/GraphMain.cs" id="1_aaqvk"]
 [ext_resource type="PackedScene" uid="uid://eej5ylbayrrt" path="res://Graphs/point.tscn" id="2_kftwd"]
@@ -15,13 +15,22 @@
 script = ExtResource("3_kftwd")
 color = Color(1, 0, 0, 1)
 name = "Horse power"
+averagePoolSize = 1
 metadata/_custom_type_script = "uid://bh2mk50gxsl62"
 
 [sub_resource type="Resource" id="Resource_0y8es"]
 script = ExtResource("3_kftwd")
-color = Color(0, 0, 1, 1)
+color = Color(0, 0, 1, 0)
 name = "Torque N"
+averagePoolSize = 6
 metadata/_custom_type_script = "uid://bh2mk50gxsl62"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8pla5"]
+bg_color = Color(0.230315, 0.230315, 0.230315, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="Graph scene" type="Control" node_paths=PackedStringArray("valueLineManager", "pointsParent", "valueNameLabel", "domainNameLabel", "dataGroupVisualizationLayout")]
 layout_mode = 3
@@ -52,6 +61,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8pla5")
 
 [node name="value name" type="Label" parent="."]
 layout_mode = 1

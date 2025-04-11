@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 [Tool]
 public partial class GraphMain : Node {
     [Export] private ValueLineManager valueLineManager;
@@ -32,7 +33,7 @@ public partial class GraphMain : Node {
     [Export] private float pointsScale;
 
 
-    [Export] private float refreshOffset = 1;
+    [Export] private float refreshRate = .4f;
 
     private float refreshRateTimer = 0;
 
@@ -54,15 +55,15 @@ public partial class GraphMain : Node {
     public override void _Process(double delta) {
         valueNameLabel.Text = valueName;
         domainNameLabel.Text = domainName;
+        //
+        // foreach (DataGroup dataGroup in dataGroups) {
+        //     while (dataGroup.data.Count < pointsCount) {
+        //         dataGroup.data.Add(0);
+        //     }
+        // }
 
-        foreach (DataGroup dataGroup in dataGroups) {
-            while (dataGroup.data.Count < pointsCount) {
-                dataGroup.data.Add(0);
-            }
-        }
 
-
-        if (refreshRateTimer < (float)refreshOffset) {
+        if (refreshRateTimer < (float)refreshRate) {
             refreshRateTimer += (float)delta;
             return;
         }
@@ -87,20 +88,9 @@ public partial class GraphMain : Node {
         base._Process(delta);
     }
 
-    [Export] uint averagePoolSize = 4;
-    private List<float> dataSmoothingCache = new();
     public void AddDataToEnd(float value, uint dataGroupIndex) {
-        dataSmoothingCache.Add(value);
-        if (dataSmoothingCache.Count < averagePoolSize)
-            return;
-        float sum = 0;
-        foreach (float v in dataSmoothingCache) {
-            sum += v;
-        }
-        dataGroups[dataGroupIndex].data.Add(sum / dataSmoothingCache.Count);
-        dataGroups[dataGroupIndex].data.RemoveAt(0);
-
-        dataSmoothingCache.Clear();
+        var dataGroup = dataGroups[dataGroupIndex];
+        dataGroup.AddData(value);
     }
     //TODO: public void AddDataForPosition(float value, float position)
 
@@ -108,6 +98,7 @@ public partial class GraphMain : Node {
         float xPositionScale = pointsParent.Size.X / pointsCount;
         float yPositionScale = pointsParent.Size.Y / (valueRange.Y - valueRange.X);
         float yPositionOffset = -valueRange.X;
+
 
 
         for (int i = 0; i < pointsCount; i++) {
@@ -126,7 +117,7 @@ public partial class GraphMain : Node {
 
     private void GenerateRandomData(uint dataGroupIndex) {
         var rng = new RandomNumberGenerator();
-        for (int i = 0; i < pointsCount * averagePoolSize; i++) {
+        for (int i = 0; i < pointsCount * dataGroups[dataGroupIndex].averagePoolSize; i++) {
             AddDataToEnd(rng.RandfRange(valueRange.X, valueRange.Y), dataGroupIndex);
         }
     }
@@ -146,6 +137,8 @@ public partial class GraphMain : Node {
 
         foreach (DataGroup dataGroup in dataGroups) {
             dataGroup.points.Clear();
+            dataGroup.data = new(Enumerable.Repeat(0f, (int)pointsCount).ToArray());
+            dataGroup.valueRange = valueRange;
 
             for (int i = 0; i < pointsCount; i++) {
                 var point = (TextureRect)pointPrefab.Instantiate();

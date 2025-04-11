@@ -2,8 +2,8 @@ using Godot;
 [Tool]
 public partial class ChassisMain : Node {
     [Export] Crankshaft crankshaft;
-    [Export] EngineController engine;
-    [Export] private float mass; // kg
+    [Export] public EngineController engine;
+    [Export] public float mass; // kg
     [Export] public float linearVelocity; // km/h
     [Export] private float breakeTorque;
     public float brakePosition;
@@ -19,6 +19,8 @@ public partial class ChassisMain : Node {
     const float msToKm = 3.6f;
 
     public bool starterButtonPressed;
+
+
 
     public override void _PhysicsProcess(double delta) {
         if (Engine.IsEditorHint())
@@ -46,6 +48,8 @@ public partial class ChassisMain : Node {
 
         base._PhysicsProcess(delta);
     }
+
+
 
     public float CurrentGearRatio => 1 / gearRatios[gear];
     private float ModifyTorqueByDrivetrainRatio(float engineTorque) {

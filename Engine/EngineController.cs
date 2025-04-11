@@ -11,6 +11,7 @@ public partial class EngineController : Node {
     [Export] private Crankshaft crankshaft;
     [Export] public EngineHeatHandler heatHandler;
 
+
     public override void _Ready() {
         ui.engine = this;
         ui.crankshaft = crankshaft;
@@ -82,7 +83,7 @@ public partial class EngineController : Node {
         overRPM = crankshaft.RevolutionsPerSecond * 60f > rpmLimit;
 
         //abs so engine doesn't run backwards
-        float deltaAngle = Mathf.Abs(crankshaft.shaftAngleDeg - lastAngleDeg);
+        float deltaAngle = crankshaft.shaftAngleDeg - lastAngleDeg/* Mathf.Abs(crankshaft.shaftAngleDeg - lastAngleDeg) */;
         lastAngleDeg = crankshaft.shaftAngleDeg;
         float temperatureSum = 0;
         float torque = 0;
@@ -94,11 +95,9 @@ public partial class EngineController : Node {
         torque -= mechanicalDragModifier * delta * crankshaft.angularVelocityDeg;
 
         heatHandler.HeatPhysics(delta);
-        currentPower = torque * crankshaft.RevolutionsPerSecond * 2 * Mathf.Pi;
         currentTorque = torque;
     }
     public void PhysicsProcessDataForLaterUI() {
         statsSmoothing.AddDataToSmoothing(currentTorque);
-        ui.AddCurrentPhysicsStatsForGraph();
     }
 }
