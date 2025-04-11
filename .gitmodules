@@ -1,0 +1,3 @@
+[submodule "submodules/Charts"]
+	path = submodules/Charts
+	url = https://github.com/FilipRuman/Charts
