@@ -32,7 +32,7 @@ public partial class Cylinder : Node3D {
 
     public override void _Process(double delta) {
         if (crankshaft == null) {
-            GD.Print("cramlshaft == null");
+            GD.PushWarning("crankshaft == null");
             return;
         }
 
