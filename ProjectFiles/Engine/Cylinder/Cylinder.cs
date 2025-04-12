@@ -19,14 +19,14 @@ public partial class Cylinder : Node3D {
 
     [Export(PropertyHint.Range, "0,100,")] public uint cylinderIndex = 0;
     [Export] public float angleOffset;
-    [Export(PropertyHint.Range, "0,1,")] public float pistonPosition;
+    public float PistonPosition => Mathf.Clamp((crankshaft.GetPistonPositionAtAngle(CurrentAngleDegrees) - Position.Y) / engine.strokeLength, 0, 1);
     [Export] private float currentTorque;
     [Export] private StrokeType currentStrokeType;
 
 
     public float CurrentAngleDegrees => angleOffset + crankshaft.shaftAngleDeg;
     public StrokeType CurrentStrokeType => (StrokeType)(Mathf.FloorToInt((CurrentAngleDegrees + 180) / 180f) % 4);
-    public float CurrentGasVolume => engine.bore * (engine.strokeLength * (1 - pistonPosition) + engine.additionalUpwardHeight);
+    public float CurrentGasVolume => engine.bore * (engine.strokeLength * (1 - PistonPosition) + engine.additionalUpwardHeight);
 
 
 
@@ -40,7 +40,6 @@ public partial class Cylinder : Node3D {
             Position = crankshaft.visuals.GetRelativeCylinderPlacement(cylinderIndex);
             currentStrokeType = CurrentStrokeType;
         }
-        pistonPosition = (crankshaft.GetPistonPositionAtAngle(CurrentAngleDegrees) - Position.Y) / engine.strokeLength;
 
         if (visuals != null)
             visuals.UpdateMeshes();
