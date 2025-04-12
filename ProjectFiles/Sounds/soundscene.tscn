@@ -28,6 +28,8 @@ mix_target = 2
 max_polyphony = 3
 bus = &"Engine"
 
+[node name="Node" type="Node" parent="Engine synth"]
+
 [node name="Engine controller" type="Node" parent="." node_paths=PackedStringArray("player")]
 script = ExtResource("4_787sv")
 player = NodePath("../Engine synth/AudioStreamPlayer")
