@@ -19,10 +19,6 @@ config/icon="res://icon.svg"
 
 buses/default_bus_layout="uid://cmu2le37v1yht"
 
-[display]
-
-window/vsync/vsync_mode=0
-
 [dotnet]
 
 project/assembly_name="New Game Project"
@@ -66,5 +62,5 @@ starter={
 
 [physics]
 
-common/physics_ticks_per_second=1000
-common/max_physics_steps_per_frame=100
+common/physics_ticks_per_second=100
+common/max_physics_steps_per_frame=10
