@@ -41,7 +41,7 @@ whealRadious = 0.15
 dragModifier = 2.0
 starterSpeed = 8.0
 dragBasedOnVelocity = SubResource("Curve_5juve")
-enginePhysicsUpdatesPerSecond = 1000.0
+enginePhysicsUpdatesPerSecond = 10000.0
 
 [node name="ChassisUI" type="Node" parent="chassis" node_paths=PackedStringArray("main", "gearText", "linearVelocityText", "dragText", "starterButton", "graph")]
 script = ExtResource("11_5c1cw")
@@ -106,7 +106,7 @@ visualsScale = 74.54
 [node name="Airflow" type="Node" parent="chassis/Engine controller"]
 script = ExtResource("4_y2354")
 MaxValveLiftCm = 40.0
-throttleDiameterCm = 80.0
+throttleDiameterCm = 50.0
 intakeVelocityModifier = 0.566
 flowEfficiency = 0.8
 exhaustVelocityModifier = 0.6
@@ -169,7 +169,7 @@ offset_top = 3.0
 offset_right = 139.0
 offset_bottom = 26.0
 grow_horizontal = 2
-text = "FPS 145"
+text = "FPS 144"
 horizontal_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="chassis/Engine controller/UI"]

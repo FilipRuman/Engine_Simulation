@@ -47,6 +47,7 @@ public partial class ChassisUI : Node {
         HandleGraphicalUI();
 
         powerCalculationTickSystem.Update((float)delta);
+
         base._Process(delta);
     }
 
