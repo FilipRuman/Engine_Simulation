@@ -48,7 +48,7 @@ public partial class EngineHeatHandler : Node {
             float heatFluxOut = deltaTemp == 0 ? 0 : castIronThermalConductivity / cylinderWallThickness * deltaTemp;
 
             // heating area changes with position of piston
-            float currentHeatingArea = cylinderEndsArea + Mathf.Pi * engine.bore * (engine.strokeLength + engine.additionalUpwardHeight) * cylinder.pistonPosition;
+            float currentHeatingArea = cylinderEndsArea + Mathf.Pi * engine.bore * (engine.strokeLength + engine.additionalUpwardHeight) * cylinder.PistonPosition;
             float transferredHeat = heatFluxIn * currentHeatingArea * heatingAreaModifier - heatFluxOut * cylinderWallAreaOut * coolingAreaModifier;
 
             cylinderWallTemperature += (delta * transferredHeat) / (massOfCylinderWalls * castIronSpecificHeatCapacity);

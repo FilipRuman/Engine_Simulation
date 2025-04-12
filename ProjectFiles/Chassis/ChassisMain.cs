@@ -20,13 +20,18 @@ public partial class ChassisMain : Node {
 
     public bool starterButtonPressed;
 
+    [Export] private float enginePhysicsUpdatesPerSecond;
+    private TickSystem enginePhysicsTickSystem = new();
 
+    public override void _Ready() {
+        enginePhysicsTickSystem.updatesPerSecond = enginePhysicsUpdatesPerSecond;
+        enginePhysicsTickSystem.toCall.Clear();
+        enginePhysicsTickSystem.toCall.Add(HandePhysics);
+        base._Ready();
+    }
 
-    public override void _PhysicsProcess(double delta) {
-        if (Engine.IsEditorHint())
-            return;
-
-        engine.HandlePhysics((float)delta);
+    private void HandePhysics(float delta) {
+        engine.HandlePhysics(delta);
         engine.PhysicsProcessDataForLaterUI();
 
         float totalEngineForce = ModifyTorqueByDrivetrainRatio(engine.currentTorque);
@@ -37,18 +42,33 @@ public partial class ChassisMain : Node {
         float acceleration = netForce / mass;
 
 
-        linearVelocity += (acceleration * (float)delta) * msToKm;
+        linearVelocity += (acceleration * delta) * msToKm;
 
         linearVelocity = Mathf.Max(0, linearVelocity);
 
         if (starterButtonPressed)
             linearVelocity = starterSpeed;
 
-        crankshaft.UpdateCrankshaftStatsBasedOnDrivetrain(linearVelocity, whealRadious, CurrentGearRatio, (float)delta);
+        crankshaft.UpdateCrankshaftStatsBasedOnDrivetrain(linearVelocity, whealRadious, CurrentGearRatio, delta);
+
+
+    }
+    public override void _PhysicsProcess(double delta) {
+        if (Engine.IsEditorHint())
+            return;
+        enginePhysicsTickSystem.Update((float)delta);
+
 
         base._PhysicsProcess(delta);
     }
-
+    // public override void _Process(double delta) {
+    //     if (Engine.IsEditorHint())
+    //         return;
+    //     enginePhysicsTickSystem.Update((float)delta);
+    //
+    //     base._Process(delta);
+    // }
+    //
 
 
     public float CurrentGearRatio => 1 / gearRatios[gear];

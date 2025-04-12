@@ -62,5 +62,6 @@ starter={
 
 [physics]
 
-common/physics_ticks_per_second=100
-common/max_physics_steps_per_frame=10
+3d/run_on_separate_thread=true
+common/physics_ticks_per_second=1000
+common/max_physics_steps_per_frame=100
