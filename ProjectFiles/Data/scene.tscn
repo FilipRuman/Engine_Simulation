@@ -41,7 +41,7 @@ whealRadious = 0.15
 dragModifier = 2.0
 starterSpeed = 8.0
 dragBasedOnVelocity = SubResource("Curve_5juve")
-enginePhysicsUpdatesPerSecond = 10000.0
+enginePhysicsUpdatesPerSecond = 400000.0
 
 [node name="ChassisUI" type="Node" parent="chassis" node_paths=PackedStringArray("main", "gearText", "linearVelocityText", "dragText", "starterButton", "graph")]
 script = ExtResource("11_5c1cw")
