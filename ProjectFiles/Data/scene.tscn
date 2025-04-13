@@ -1,19 +1,19 @@
 [gd_scene load_steps=18 format=3 uid="uid://dousinkic130u"]
 
-[ext_resource type="Script" uid="uid://ccblf4w2x8ob8" path="res://Engine/EngineController.cs" id="1_xlvrw"]
-[ext_resource type="Script" uid="uid://b7ba3uaxjle7" path="res://Engine/Crankshaft.cs" id="2_3253y"]
-[ext_resource type="Script" uid="uid://bdyfbuaytxbci" path="res://Engine/EngineHeatHandler.cs" id="3_73fnb"]
-[ext_resource type="Script" uid="uid://c0x5rause6t86" path="res://Engine/EngineUI.cs" id="4_5c1cw"]
-[ext_resource type="Script" uid="uid://x1ardn0rs4bd" path="res://Engine/CrankshaftVisuals.cs" id="4_73fnb"]
-[ext_resource type="Script" uid="uid://0ahy3760o3gk" path="res://Engine/Cylinder/AirFlow.cs" id="4_y2354"]
-[ext_resource type="PackedScene" uid="uid://yr1lm7flecqr" path="res://Engine/crank_pin_new.tscn" id="5_xlvrw"]
-[ext_resource type="Script" uid="uid://dxb56a7ylbrri" path="res://Engine/EngineStatsSmoothing.cs" id="6_gu47o"]
-[ext_resource type="PackedScene" uid="uid://bbychswvrpwhn" path="res://Engine/Cylinder/cylinder.tscn" id="7_73fnb"]
-[ext_resource type="PackedScene" uid="uid://dsg5g4ti0n3gt" path="res://Sounds/soundscene.tscn" id="7_ni31j"]
-[ext_resource type="Script" uid="uid://c38ac4trq2i3u" path="res://Chassis/ChassisMain.cs" id="9_5juve"]
-[ext_resource type="PackedScene" uid="uid://ckvdm2kftbv23" path="res://Charts/engine graph.tscn" id="9_gu47o"]
-[ext_resource type="Script" uid="uid://ds6cv14cjet8v" path="res://Chassis/ChassisUI.cs" id="11_5c1cw"]
-[ext_resource type="Material" uid="uid://dno6n2t4wsqta" path="res://sprites/Gridbox Prototype Materials/Materials/wing mat.tres" id="11_fy5k1"]
+[ext_resource type="Script" uid="uid://ccblf4w2x8ob8" path="res://Data/Engine/EngineController.cs" id="1_xlvrw"]
+[ext_resource type="Script" uid="uid://b7ba3uaxjle7" path="res://Data/Engine/Crankshaft.cs" id="2_3253y"]
+[ext_resource type="Script" uid="uid://bdyfbuaytxbci" path="res://Data/Engine/EngineHeatHandler.cs" id="3_73fnb"]
+[ext_resource type="Script" uid="uid://c0x5rause6t86" path="res://Data/Engine/EngineUI.cs" id="4_5c1cw"]
+[ext_resource type="Script" uid="uid://x1ardn0rs4bd" path="res://Data/Engine/CrankshaftVisuals.cs" id="4_73fnb"]
+[ext_resource type="Script" uid="uid://0ahy3760o3gk" path="res://Data/Engine/Cylinder/AirFlow.cs" id="4_y2354"]
+[ext_resource type="PackedScene" uid="uid://yr1lm7flecqr" path="res://Data/Engine/crank_pin_new.tscn" id="5_xlvrw"]
+[ext_resource type="Script" uid="uid://dxb56a7ylbrri" path="res://Data/Engine/EngineStatsSmoothing.cs" id="6_gu47o"]
+[ext_resource type="PackedScene" uid="uid://bbychswvrpwhn" path="res://Data/Engine/Cylinder/cylinder.tscn" id="7_73fnb"]
+[ext_resource type="PackedScene" uid="uid://dsg5g4ti0n3gt" path="res://Data/Sounds/soundscene.tscn" id="7_ni31j"]
+[ext_resource type="Script" uid="uid://c38ac4trq2i3u" path="res://Data/Chassis/ChassisMain.cs" id="9_5juve"]
+[ext_resource type="PackedScene" uid="uid://ckvdm2kftbv23" path="res://Data/Charts/engine graph.tscn" id="9_gu47o"]
+[ext_resource type="Script" uid="uid://ds6cv14cjet8v" path="res://Data/Chassis/ChassisUI.cs" id="11_5c1cw"]
+[ext_resource type="Material" uid="uid://dno6n2t4wsqta" path="res://Data/sprites/Gridbox Prototype Materials/Materials/wing mat.tres" id="11_fy5k1"]
 
 [sub_resource type="Curve" id="Curve_5juve"]
 _limits = [107.603, 310.64, 0.0, 500.0]
@@ -147,7 +147,8 @@ FeedbackAmount = 9.84
 [node name="AudioStreamPlayer" parent="chassis/Engine controller/UI/Sound scene/Engine synth" index="0"]
 volume_db = 1.0
 
-[node name="Engine controller" parent="chassis/Engine controller/UI/Sound scene" index="1"]
+[node name="Engine controller" parent="chassis/Engine controller/UI/Sound scene" index="1" node_paths=PackedStringArray("waveGen")]
+waveGen = NodePath("../Engine synth")
 volumeMinMax = Vector2(1, 10)
 
 [node name="throttle" type="VSlider" parent="chassis/Engine controller/UI"]
@@ -169,7 +170,7 @@ offset_top = 3.0
 offset_right = 139.0
 offset_bottom = 26.0
 grow_horizontal = 2
-text = "FPS 144"
+text = "FPS 143"
 horizontal_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="chassis/Engine controller/UI"]

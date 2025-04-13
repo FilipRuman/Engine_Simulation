@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cyear5333qmy6"
-path.s3tc="res://.godot/imported/prototype_512x512_brown.png-fb5a6b4abe55bb36a0b885caaf925dd1.s3tc.ctex"
+path.s3tc="res://.godot/imported/prototype_512x512_brown.png-9b2465763548a23657db8735f201f619.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://sprites/Gridbox Prototype Materials/Textures/Prototype Grid/prototype_512x512_brown.png"
-dest_files=["res://.godot/imported/prototype_512x512_brown.png-fb5a6b4abe55bb36a0b885caaf925dd1.s3tc.ctex"]
+source_file="res://Data/sprites/Gridbox Prototype Materials/Textures/Prototype Grid/prototype_512x512_brown.png"
+dest_files=["res://.godot/imported/prototype_512x512_brown.png-9b2465763548a23657db8735f201f619.s3tc.ctex"]
 
 [params]
 

@@ -1,6 +1,6 @@
 using Godot;
 using System;
-
+[Tool]
 public partial class NoiseAndSin : Node {
 
 
@@ -35,7 +35,6 @@ public partial class NoiseAndSin : Node {
     }
     // ? To change rpm just change Base Frequency
     public void PlaySound() {
-
         int totalSamples = (int)(SampleRate * Duration);
         Vector2[] samples = new Vector2[totalSamples];
 
