@@ -24,6 +24,10 @@ public partial class Crankshaft : Node3D {
         angularVelocityDeg = Mathf.RadToDeg(angularVelocityRad);
         shaftAngleDeg += angularVelocityDeg * delta;
     }
+    public void UpdateCrankshaftStatsBasedOnDrivetrain(float angularVelocityOfDrivetrainRad, float delta) {
+        angularVelocityDeg = Mathf.RadToDeg(angularVelocityOfDrivetrainRad);
+        shaftAngleDeg += angularVelocityDeg * delta;
+    }
 
     public override void _Ready() {
 
