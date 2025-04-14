@@ -8,7 +8,6 @@ public partial class EngineHeatHandler : Node {
     // I could calculate this but it doesn't really matter
     [Export(PropertyHint.Range, "0,1,")] private float emissivityOfTheGas;
     private const float StefanBoltzmannConstant = .0000000567f;
-    [Export] private float coolantTemperatureDeg;
     [Export] private float cylinderWallThicknessCm;
     private float cylinderWallThickness => cylinderWallThicknessCm / 100f;
 
@@ -19,7 +18,8 @@ public partial class EngineHeatHandler : Node {
     private const float castIronThermalConductivity = 55f;//W/m·K
     private const float castIronSpecificHeatCapacity = 500f;//
     private const float castIronDensity = 7200f; //kg/m3
-    private float coolantTempK => coolantTemperatureDeg + 273f;
+    private float coolantTempK => engine.ambientAirTemperature;
+
     public override void _Ready() {
         cylinderWallTemperature = 30 + 273;
         base._Ready();
