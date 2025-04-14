@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Godot;
 [Tool]
-public partial class Crankshaft : Node3D {
+public partial class Crankshaft : Node {
 
     [Export] public CrankshaftVisuals visuals;
     [Export] public EngineController engine;
