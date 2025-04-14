@@ -75,8 +75,5 @@ public class Combustion {
 
 
     public const float GasConstant = 8.314f;
-    public const float ambientAirDensity = 1.225f; // kg/m3
-    public const float ambientAirTemperature = 288.15f; // Kelvins
-
 
 }

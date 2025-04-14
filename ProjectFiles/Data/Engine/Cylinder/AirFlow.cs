@@ -36,7 +36,7 @@ public partial class AirFlow : Node {
     }
 
     public float CalculateMasOfAirIntake(float deltaTime) {
-        float gasDensity = Combustion.ambientAirDensity;
+        float gasDensity = engine.ambientAirDensity;
         return gasDensity * VolumetricFlowRate(CurrentEffectiveIntakeFlowArea) * intakeVelocityModifier * deltaTime;
     }
     [Export(PropertyHint.Range, "0.3,0.6,")] private float exhaustVelocityModifier = .5f;
@@ -46,5 +46,6 @@ public partial class AirFlow : Node {
         float gasDensity = cylinder.gasMasInsideCylinder / cylinder.CurrentGasVolume;
         return gasDensity * VolumetricFlowRate(exhaustAreaM) * exhaustVelocityModifier * deltaTime;
     }
+
 
 }

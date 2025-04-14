@@ -11,6 +11,9 @@ public partial class EngineController : Node {
     [Export] private Crankshaft crankshaft;
     [Export] public EngineHeatHandler heatHandler;
 
+    public float ambientAirDensity = 1.225f; // kg/m3
+    public float ambientAirTemperature = 288.15f; // Kelvins
+
 
     public override void _Ready() {
         ui.engine = this;
