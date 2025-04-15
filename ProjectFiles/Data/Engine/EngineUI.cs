@@ -34,20 +34,22 @@ public partial class EngineUI : Node {
     }
     private void UpdateTextUI() {
         // i just use one of cylinders so i don't heave to do any weird averaging, ratios should be similar in all cylinders
-        exhaustFumesRatioBeforeCombustion.Text = $"Exhaust fumes ratio in gas mixture before combustion {Math.Round(engine.cylinders[0].CurrentCombustionFumesAirRatio, 2)}";
-        gameFps.Text = $"FPS {Engine.GetFramesPerSecond()}";
+        SetLabel(exhaustFumesRatioBeforeCombustion, $"Exhaust fumes ratio in gas mixture before combustion {Math.Round(engine.cylinders[0].CurrentCombustionFumesAirRatio, 2)}");
+        SetLabel(gameFps, $"FPS {Engine.GetFramesPerSecond()}");
+        SetLabel(temperature, $"Temperature of 1'st cylinder's wall: {Mathf.RoundToInt(engine.heatHandler.cylinderWallTemperature - 273)}C");
+        SetLabel(angularVelocityText, $"Angular velocity: {Mathf.RoundToInt(crankshaft.angularVelocityDeg)}");
+        SetLabel(rpm, $"RPM: {Mathf.RoundToInt(crankshaft.RevolutionsPerSecond * 60f)}");
+        SetLabel(horsePower, $"Horse power: {(int)crankshaft.engine.currentHorsePower}");
+        SetLabel(totalTorque, $"Torque: {(int)engine.averageTorque}");
+        SetLabel(averageGasTemperature, $"Average gas temperature: {(int)engine.cylinders[0].gasTemperatureInsideCylinder}");
+
         throttleSlider.Value = engine.throttle;
-        temperature.Text = $"Temperature of 1'st cylinder's wall: {Mathf.RoundToInt(engine.heatHandler.cylinderWallTemperature - 273)}C";
-
-        angularVelocityText.Text = $"Angular velocity: {Mathf.RoundToInt(crankshaft.angularVelocityDeg)}";
-        rpm.Text = $"RPM: {Mathf.RoundToInt(crankshaft.RevolutionsPerSecond * 60f)}";
-
         soundController.throttle = engine.overRPM ? 0 : engine.throttle;
         soundController.rpm = crankshaft.RevolutionsPerSecond * 60f;
-
-        horsePower.Text = $"Horse power: {(int)crankshaft.engine.currentHorsePower}";
-        totalTorque.Text = $"Torque: {(int)engine.averageTorque}";
-        averageGasTemperature.Text = $"Average gas temperature: {(int)engine.cylinders[0].gasTemperatureInsideCylinder}";
+    }
+    public void SetLabel(Label label, string text) {
+        if (label != null)
+            label.Text = text;
     }
 
 }
