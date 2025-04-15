@@ -17,7 +17,7 @@ public partial class EngineUI : Node {
     [Export] Label horsePower;
     [Export] Label temperature;
     [Export] Label gameFps;
-    [Export] CheckButton holdIdle;
+    [Export] CheckBox holdIdle;
 
     public override void _Process(double delta) {
         HandleInput();
