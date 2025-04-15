@@ -29,6 +29,15 @@ public partial class Crankshaft : Node {
         shaftAngleDeg += angularVelocityDeg * delta;
     }
 
+    [Export] public float crankshaftLength = 10f;
+    [Export] public float cylindersPadding = 5f;
+    public Vector3 GetRelativeCylinderPlacement(uint cylinderIndex) {
+        var lengthPerCylinder = (crankshaftLength - cylindersPadding * 2) / (float)(engine.cylinders.Length - 1);
+        return new(0, GetBottomDeadCentreHeight(), lengthPerCylinder * cylinderIndex + cylindersPadding);
+    }
+
+
+
     public override void _Ready() {
 
         if (visuals == null)

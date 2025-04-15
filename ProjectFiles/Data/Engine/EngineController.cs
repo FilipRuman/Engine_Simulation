@@ -47,6 +47,7 @@ public partial class EngineController : Node {
     [Export] private float rpmLimit;
     [ExportGroup("Drag and torque")]
     [Export] private float mechanicalDragModifier;
+    // DO NOT USE THIS!
     [Export] public float pressureChangeFrictionModifier = 3;
 
 

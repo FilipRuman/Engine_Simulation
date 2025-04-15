@@ -1,6 +1,6 @@
 using Godot;
 [Tool, GlobalClass]
-public partial class Cylinder : Node3D {
+public partial class Cylinder : Node {
 
     public enum StrokeType {
         Exhaust,
@@ -19,7 +19,7 @@ public partial class Cylinder : Node3D {
 
     [Export(PropertyHint.Range, "0,100,")] public uint cylinderIndex = 0;
     [Export] public float angleOffset;
-    public float PistonPosition => Mathf.Clamp((crankshaft.GetPistonPositionAtAngle(CurrentAngleDegrees) - Position.Y) / engine.strokeLength, 0, 1);
+    public float PistonPosition => Mathf.Clamp((crankshaft.GetPistonPositionAtAngle(CurrentAngleDegrees) - crankshaft.GetRelativeCylinderPlacement(cylinderIndex).Y) / engine.strokeLength, 0, 1);
     [Export] private float currentTorque;
     [Export] private StrokeType currentStrokeType;
 
@@ -37,8 +37,8 @@ public partial class Cylinder : Node3D {
         }
 
         if (Engine.IsEditorHint()) {
-            if (crankshaft.visuals != null)
-                Position = crankshaft.visuals.GetRelativeCylinderPlacement(cylinderIndex);
+            if (visuals != null)
+                visuals.Position = crankshaft.GetRelativeCylinderPlacement(cylinderIndex);
 
             currentStrokeType = CurrentStrokeType;
         }
