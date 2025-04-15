@@ -37,7 +37,9 @@ public partial class Cylinder : Node3D {
         }
 
         if (Engine.IsEditorHint()) {
-            Position = crankshaft.visuals.GetRelativeCylinderPlacement(cylinderIndex);
+            if (crankshaft.visuals != null)
+                Position = crankshaft.visuals.GetRelativeCylinderPlacement(cylinderIndex);
+
             currentStrokeType = CurrentStrokeType;
         }
 
