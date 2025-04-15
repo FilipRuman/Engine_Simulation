@@ -22,8 +22,10 @@ public partial class ChassisUI : Node {
             main.gear++;
         if (previousGearActionName != "" && Input.IsActionJustPressed(previousGearActionName) && main.gear != 0)
             main.gear--;
-        if (starterActionName != "" && Input.IsActionJustPressed(starterActionName) && main.linearVelocity < main.starterSpeed + 10)
+        if (starterActionName != "" && Input.IsActionJustPressed(starterActionName) && main.linearVelocity < main.starterSpeed + 10) {
             starterButton.ButtonPressed = !starterButton.ButtonPressed;
+            main.engine.holdIdle = true;
+        }
         if (brakeActionName != "")
             main.brakePosition = Input.GetActionStrength(brakeActionName);
 

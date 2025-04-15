@@ -45,6 +45,13 @@ public partial class EngineController : Node {
 
     [Export(PropertyHint.Range, "0,1,")] public float throttle;
     [Export] private float rpmLimit;
+
+    [Export] private uint idleRPMTarget;
+    [Export] private float idleThrottlePercentage;
+    public bool holdIdle;
+    public bool overRPM = false;
+
+
     [ExportGroup("Drag and torque")]
     [Export] private float mechanicalDragModifier;
     // DO NOT USE THIS!
@@ -70,7 +77,6 @@ public partial class EngineController : Node {
     public float currentHorsePower => currentPower / 745.7f;
     public float currentTorque;
 
-    public bool overRPM = false;
     private void CalculateDisplacement() {
         var radius = bore / 2f;
         displacement = Mathf.Pi * radius * radius * (strokeLength + additionalUpwardHeight);
@@ -81,10 +87,11 @@ public partial class EngineController : Node {
     public float averageTemperature;
     public float averageTorque;
 
-
     float lastAngleDeg = 0;
     public void HandlePhysics(float delta) {
         overRPM = crankshaft.RevolutionsPerSecond * 60f > rpmLimit;
+        if (holdIdle && idleRPMTarget > crankshaft.RevolutionsPerSecond * 60f && throttle < idleThrottlePercentage)
+            throttle = idleThrottlePercentage;
 
         //abs so engine doesn't run backwards
         float deltaAngle = crankshaft.shaftAngleDeg - lastAngleDeg/* Mathf.Abs(crankshaft.shaftAngleDeg - lastAngleDeg) */;
