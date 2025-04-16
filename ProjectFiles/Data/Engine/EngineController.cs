@@ -8,7 +8,7 @@ public partial class EngineController : Node {
     [Export] public EngineStatsSmoothing statsSmoothing;
     [Export] public AirFlow airFlow;
     [Export] public Cylinder[] cylinders;
-    [Export] private Crankshaft crankshaft;
+    [Export] public Crankshaft crankshaft;
     [Export] public EngineHeatHandler heatHandler;
 
     public float ambientAirDensity = 1.225f; // kg/m3
@@ -44,7 +44,7 @@ public partial class EngineController : Node {
 
 
     [Export(PropertyHint.Range, "0,1,")] public float throttle;
-    [Export] private float rpmLimit;
+    [Export] public float rpmLimit;
 
     [Export] private uint idleRPMTarget;
     [Export] private float idleThrottlePercentage;
