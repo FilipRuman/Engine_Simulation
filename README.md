@@ -17,6 +17,7 @@ This engine simulator is designed primarily for propeller plane simulations with
 -   **Learning Resources:** The codebase contains extensive comments and research resources to aid understanding and further development.
 -   **Charting:** Integrates charting functionality from [my Charts project](https://github.com/FilipRuman/Charts) for clear engine performance display.
 -   **Frame Rate Independence:** Employs a tick-based system that precisely controls simulation quality and ensures consistent behavior, regardless of the game's frame rate.
+-   **Idle:** System that holds engine at minimal rpm
 
 ## Configuration Options:
 
