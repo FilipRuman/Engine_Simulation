@@ -87,6 +87,9 @@ public partial class Cylinder : Node {
         gasMasInsideCylinder = Mathf.Max(.1f, gasMasInsideCylinder);
         //https://en.wikipedia.org/wiki/First_law_of_thermodynamics
         ApplyFirstLawOfThremodynamics(out float work);
+        // I have just realized that, this is not realistic at all!
+        // if i come back to this project I'll have to go back to previous way of calculating torque
+        // this would be true if pistone was moving freely not connected to a spinning crankshaft
         if (deltaAngleDegrees == 0)
             torque = 0;
         else
